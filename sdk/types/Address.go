@@ -1,21 +1,21 @@
 package types
 
 type Address struct {
-	AccountType AccountType `json:"accountType"`
-	CreatedAt string `json:"createdAt"`
-	Memo *string `json:"memo"`
-	RequiresAssetsActivation bool `json:"requiresAssetsActivation"`
 	Status AddressStatus `json:"status"`
-	UpdatedAt string `json:"updatedAt"`
-	UpdatedBy string `json:"updatedBy"`
-	WorkspaceId *string `json:"workspaceId"`
+	RequiresAssetsActivation bool `json:"requiresAssetsActivation"`
 	AccountId *string `json:"accountId"`
-	ActivatedAssets *[]ActivatedAsset `json:"activatedAssets"`
-	Address *string `json:"address"`
 	AddressId string `json:"addressId"`
 	ExternalId string `json:"externalId"`
-	AcceptsAllAssets bool `json:"acceptsAllAssets"`
-	CreatedBy string `json:"createdBy"`
+	Memo *string `json:"memo"`
 	Metadata *map[string]interface{} `json:"metadata"`
+	UpdatedAt string `json:"updatedAt"`
+	WorkspaceId *string `json:"workspaceId"`
+	CreatedAt string `json:"createdAt"`
+	CreatedBy string `json:"createdBy"`
+	UpdatedBy string `json:"updatedBy"`
+	AcceptsAllAssets bool `json:"acceptsAllAssets"`
+	ActivatedAssets *[]ActivatedAsset `json:"activatedAssets"`
+	Address *string `json:"address"`
+	AccountType AccountType `json:"accountType"`
 	NetworkId string `json:"networkId"`
 }

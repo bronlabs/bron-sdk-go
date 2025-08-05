@@ -109,96 +109,6 @@ log.Fatal(err)
 }
 ```
 
-## Project Structure
-
-```
-bron-sdk-go/
-├── src/
-│   ├── client.go          # Main client
-│   ├── api/               # API implementations
-│   │   └── accounts.go
-│   ├── types/             # Type definitions
-│   │   ├── Account.go
-│   │   ├── Transaction.go
-│   │   └── Workspace.go
-│   ├── http/              # HTTP client
-│   │   └── client.go
-│   └── utils/             # Utilities
-│       ├── auth.go        # JWT generation
-│       ├── keyGenerator.go # Key generation
-│       └── generator.go   # Code generator
-├── cmd/
-│   ├── keygen/            # Key generation CLI
-│   └── generator/         # Code generation CLI
-├── test/                  # Tests
-├── my-bron-app-go/        # Demo application
-└── bron-open-api-public.json # OpenAPI spec
-```
-
-## Transaction API
-
-Use the transaction API to send any token:
-
-```go
-// Send any token
-err := client.Transactions.CreateTransaction(types.CreateTransaction{
-ExternalId:      uuid.New().String(),
-AccountId:       accountID,
-TransactionType: "withdrawal",
-Params: map[string]interface{}{
-"amount":    amount,
-"networkId": networkId, // "ETH" for mainnet, "testETH" for testnet
-"symbol":    symbol, // "ETH", "BRON", etc.
-"toAddress": toAddress,
-},
-})
-```
-
-## API Examples
-
-### Accounts
-
-```go
-// Get all accounts
-accounts, err := client.Accounts.GetAccounts()
-
-// Get specific account
-account, err := client.Accounts().RetrieveAccountById("account-id")
-```
-
-### Transactions
-
-```go
-// Create transaction
-transaction, err := client.Transactions().CreateTransaction(bron.CreateTransaction{
-ExternalID:      "unique-id",
-AccountID:       "account-id",
-TransactionType: "withdrawal",
-Params: map[string]interface{}{
-"amount":    "0.001",
-"networkId": "testETH",
-"symbol":    "ETH",
-"toAddress": "0x...",
-},
-})
-```
-
-## Development
-
-### Running Tests
-
-```bash
-go test ./test/...
-```
-
-### Code Generation
-
-```bash
-make generate
-```
-
-This will generate Go types and API methods from the OpenAPI specification.
-
 ### Building
 
 ```bash
@@ -234,23 +144,6 @@ log.Printf("API error: %v", err)
 return
 }
 ```
-
-## Demo Application
-
-A complete demo application is included in `my-bron-app-go/`:
-
-```bash
-cd my-bron-app-go
-go run demo.go
-```
-
-## Contributing
-
-1. Fork the repository
-2. Create a feature branch
-3. Make your changes
-4. Add tests
-5. Submit a pull request
 
 ## License
 
