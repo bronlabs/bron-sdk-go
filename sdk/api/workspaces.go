@@ -19,7 +19,7 @@ func NewWorkspacesAPI(http *http.Client, workspaceID string) *WorkspacesAPI {
 }
 
 func (api *WorkspacesAPI) GetWorkspace() (*types.Workspace, error) {
-		path := fmt.Sprintf("/workspaces/%s", api.workspaceID)
+	path := fmt.Sprintf("/workspaces/%s", api.workspaceID)
 	var result types.Workspace
 	options := http.RequestOptions{
 		Method: "GET",
@@ -31,7 +31,7 @@ func (api *WorkspacesAPI) GetWorkspace() (*types.Workspace, error) {
 
 
 func (api *WorkspacesAPI) GetActivities() (*types.Activities, error) {
-		path := fmt.Sprintf("/workspaces/%s/activities", api.workspaceID)
+	path := fmt.Sprintf("/workspaces/%s/activities", api.workspaceID)
 	var result types.Activities
 	options := http.RequestOptions{
 		Method: "GET",
@@ -43,7 +43,7 @@ func (api *WorkspacesAPI) GetActivities() (*types.Activities, error) {
 
 
 func (api *WorkspacesAPI) GetWorkspaceMembers() (*types.WorkspaceMembers, error) {
-		path := fmt.Sprintf("/workspaces/%s/members", api.workspaceID)
+	path := fmt.Sprintf("/workspaces/%s/members", api.workspaceID)
 	var result types.WorkspaceMembers
 	options := http.RequestOptions{
 		Method: "GET",

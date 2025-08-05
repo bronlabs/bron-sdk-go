@@ -1,4 +1,4 @@
-package bron
+package sdk
 
 import (
 	"github.com/bronlabs/bron-sdk-go/sdk/api"
@@ -8,6 +8,7 @@ import (
 type BronClientConfig struct {
 	APIKey      string
 	WorkspaceID string
+	BaseURL     string
 }
 
 type BronClient struct {
@@ -29,13 +30,12 @@ type BronClient struct {
 }
 
 func NewBronClient(config BronClientConfig) *BronClient {
-	baseURL := "https://api.bron.org"
-	httpClient := http.NewClient(baseURL, config.APIKey)
+	httpClient := http.NewClient(config.BaseURL, config.APIKey)
 
 	client := &BronClient{
 		http:        httpClient,
 		workspaceID: config.WorkspaceID,
-		baseURL:     baseURL,
+		baseURL:     config.BaseURL,
 		apiKey:      config.APIKey,
 	}
 

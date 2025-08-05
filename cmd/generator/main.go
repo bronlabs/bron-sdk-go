@@ -502,7 +502,7 @@ func (g *Generator) generateMethod(op OpenApiOperation, method, route string) st
 	}
 
 	// HTTP request
-	sb.WriteString(fmt.Sprintf("\t\tpath := fmt.Sprintf(\"%s\"", pathExpr))
+	sb.WriteString(fmt.Sprintf("\tpath := fmt.Sprintf(\"%s\"", pathExpr))
 	sb.WriteString(", api.workspaceID")
 	for _, param := range pathParams {
 		sb.WriteString(fmt.Sprintf(", %s", param.name))
