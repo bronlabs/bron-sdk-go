@@ -6,6 +6,8 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	urlpkg "net/url"
+	"strings"
 	"time"
 
 	"github.com/bronlabs/bron-sdk-go/sdk/auth"
@@ -15,6 +17,7 @@ type RequestOptions struct {
 	Method string
 	Path   string
 	Body   interface{}
+	Query  interface{}
 }
 
 type Client struct {
@@ -35,6 +38,34 @@ func NewClient(baseURL, apiKey string) *Client {
 
 func (c *Client) Request(result interface{}, options RequestOptions) error {
 	url := c.baseURL + options.Path
+	if options.Query != nil {
+		// Build query string from struct
+		queryBytes, _ := json.Marshal(options.Query)
+		var qMap map[string]interface{}
+		json.Unmarshal(queryBytes, &qMap)
+		if len(qMap) > 0 {
+			params := urlpkg.Values{}
+			for k, v := range qMap {
+				if v == nil {
+					continue
+				}
+				switch val := v.(type) {
+				case []interface{}:
+					// Join array elements with comma
+					strVals := make([]string, len(val))
+					for i, e := range val {
+						strVals[i] = fmt.Sprintf("%v", e)
+					}
+					params.Set(k, strings.Join(strVals, ","))
+				default:
+					params.Set(k, fmt.Sprintf("%v", val))
+				}
+			}
+			if qs := params.Encode(); qs != "" {
+				url += "?" + qs
+			}
+		}
+	}
 
 	var body io.Reader
 	if options.Body != nil {

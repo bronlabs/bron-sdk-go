@@ -19,12 +19,13 @@ func NewAddressBookAPI(http *http.Client, workspaceID string) *AddressBookAPI {
 	}
 }
 
-func (api *AddressBookAPI) GetAddressBookRecords() (*types.AddressBookRecords, error) {
+func (api *AddressBookAPI) GetAddressBookRecords(query *types.AddressBookQuery) (*types.AddressBookRecords, error) {
 	path := fmt.Sprintf("/workspaces/%s/address-book-records", api.workspaceID)
 	var result types.AddressBookRecords
 	options := http.RequestOptions{
 		Method: "GET",
 		Path:   path,
+		Query:  query,
 	}
 	err := api.http.Request(&result, options)
 	return &result, err

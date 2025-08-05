@@ -19,12 +19,13 @@ func NewTransactionsAPI(http *http.Client, workspaceID string) *TransactionsAPI 
 	}
 }
 
-func (api *TransactionsAPI) GetTransactions() (*types.Transactions, error) {
+func (api *TransactionsAPI) GetTransactions(query *types.TransactionsQuery) (*types.Transactions, error) {
 	path := fmt.Sprintf("/workspaces/%s/transactions", api.workspaceID)
 	var result types.Transactions
 	options := http.RequestOptions{
 		Method: "GET",
 		Path:   path,
+		Query:  query,
 	}
 	err := api.http.Request(&result, options)
 	return &result, err

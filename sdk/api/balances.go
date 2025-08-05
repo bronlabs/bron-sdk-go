@@ -19,12 +19,13 @@ func NewBalancesAPI(http *http.Client, workspaceID string) *BalancesAPI {
 	}
 }
 
-func (api *BalancesAPI) GetBalances() (*types.Balances, error) {
+func (api *BalancesAPI) GetBalances(query *types.BalancesQuery) (*types.Balances, error) {
 	path := fmt.Sprintf("/workspaces/%s/balances", api.workspaceID)
 	var result types.Balances
 	options := http.RequestOptions{
 		Method: "GET",
 		Path:   path,
+		Query:  query,
 	}
 	err := api.http.Request(&result, options)
 	return &result, err
