@@ -3,13 +3,14 @@ module github.com/bronlabs/bron-sdk-go
 go 1.24.5
 
 require (
-	github.com/golang-jwt/jwt/v5 v5.2.0
+	github.com/golang-jwt/jwt/v5 v5.3.0
 	github.com/lestrrat-go/jwx/v2 v2.1.6
 )
 
 require (
 	github.com/decred/dcrd/dcrec/secp256k1/v4 v4.4.0 // indirect
 	github.com/goccy/go-json v0.10.3 // indirect
+	github.com/iancoleman/orderedmap v0.3.0 // indirect
 	github.com/lestrrat-go/blackmagic v1.0.3 // indirect
 	github.com/lestrrat-go/httpcc v1.0.1 // indirect
 	github.com/lestrrat-go/httprc v1.0.6 // indirect
