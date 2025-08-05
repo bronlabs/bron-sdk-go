@@ -10,7 +10,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/bronlabs/bron-sdk-go/src/utils"
+	"github.com/bronlabs/bron-sdk-go/sdk/utils"
 )
 
 type RequestOptions struct {
@@ -118,4 +118,4 @@ func (h *Client) Request(result interface{}, options RequestOptions) error {
 	}
 
 	return nil
-} 
+}

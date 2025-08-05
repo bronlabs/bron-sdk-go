@@ -1,8 +1,8 @@
-package bron
+package sdk
 
 import (
-	"github.com/bronlabs/bron-sdk-go/src/api"
-	"github.com/bronlabs/bron-sdk-go/src/http"
+	"github.com/bronlabs/bron-sdk-go/sdk/api"
+	"github.com/bronlabs/bron-sdk-go/sdk/http"
 )
 
 type BronClientConfig struct {

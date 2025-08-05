@@ -1,7 +1,7 @@
 .PHONY: build test clean generate-keys
 
 build:
-	go build -o bin/bron-sdk-go ./src
+	go build -o bin/bron-sdk-go ./sdk
 
 test:
 	go test ./...
@@ -10,7 +10,7 @@ clean:
 	rm -rf bin/
 
 generate-keys:
-	go run cmd/keygen/main.go
+	go run cmd/keygen.go
 
 validate-jwk:
 	go run cmd/keygen/main.go --validate $(JWK)
@@ -22,4 +22,4 @@ publish:
 	go mod tidy
 	go test ./...
 	git tag v$(VERSION)
-	git push origin v$(VERSION) 
+	git push origin v$(VERSION)

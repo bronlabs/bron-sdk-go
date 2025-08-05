@@ -26,10 +26,12 @@ go run cmd/keygen/main.go
 ```
 
 This will output:
+
 - **Public JWK** (send to Bron)
 - **Private JWK** (keep safe)
 
 To validate a JWK:
+
 ```bash
 go run cmd/keygen/main.go --validate '{"kty":"EC",...}'
 ```
@@ -44,26 +46,26 @@ package main
 import (
 	"log"
 	"os"
-	bron "github.com/bronlabs/bron-sdk-go/src"
-	"github.com/bronlabs/bron-sdk-go/src/types"
+	bron "github.com/bronlabs/bron-sdk-go/sdk"
+	"github.com/bronlabs/bron-sdk-go/sdk/types"
 	"github.com/google/uuid"
 	"github.com/joho/godotenv"
 )
 
 func main() {
 	godotenv.Load()
-	
+
 	client := bron.NewBronClient(bron.BronClientConfig{
 		APIKey:      os.Getenv("BRON_API_KEY"),
 		WorkspaceID: os.Getenv("BRON_WORKSPACE_ID"),
 	})
 
 	// Just change these values:
-	accountID := "your_account_id"     // Your account ID
-	toAddress := "0x..."               // Where to send
-	amount := "0.001"                  // How much to send
-	symbol := "ETH"                    // What to send (ETH, BRON, etc.)
-	networkId := "testETH"             // Network (ETH=mainnet, testETH=testnet)
+	accountID := "your_account_id" // Your account ID
+	toAddress := "0x..."           // Where to send
+	amount := "0.001"              // How much to send
+	symbol := "ETH"                // What to send (ETH, BRON, etc.)
+	networkId := "testETH"         // Network (ETH=mainnet, testETH=testnet)
 
 	err := client.Transactions.CreateTransaction(types.CreateTransaction{
 		ExternalId:      uuid.New().String(),
@@ -76,11 +78,11 @@ func main() {
 			"toAddress": toAddress,
 		},
 	})
-	
+
 	if err != nil {
 		log.Fatal("Error:", err)
 	}
-	
+
 	log.Println("✅ Transaction sent!")
 }
 ```
@@ -91,19 +93,19 @@ func main() {
 // Get all accounts
 accounts, err := client.Accounts.GetAccounts()
 if err != nil {
-	log.Fatal(err)
+log.Fatal(err)
 }
 
 // Get balances
 balances, err := client.Balances.GetBalances()
 if err != nil {
-	log.Fatal(err)
+log.Fatal(err)
 }
 
 // Get specific account balance
 balance, err := client.GetAccountBalance("account_id")
 if err != nil {
-	log.Fatal(err)
+log.Fatal(err)
 }
 ```
 
@@ -140,15 +142,15 @@ Use the transaction API to send any token:
 ```go
 // Send any token
 err := client.Transactions.CreateTransaction(types.CreateTransaction{
-	ExternalId:      uuid.New().String(),
-	AccountId:       accountID,
-	TransactionType: "withdrawal",
-	Params: map[string]interface{}{
-		"amount":    amount,
-		"networkId": networkId, // "ETH" for mainnet, "testETH" for testnet
-		"symbol":    symbol,    // "ETH", "BRON", etc.
-		"toAddress": toAddress,
-	},
+ExternalId:      uuid.New().String(),
+AccountId:       accountID,
+TransactionType: "withdrawal",
+Params: map[string]interface{}{
+"amount":    amount,
+"networkId": networkId, // "ETH" for mainnet, "testETH" for testnet
+"symbol":    symbol, // "ETH", "BRON", etc.
+"toAddress": toAddress,
+},
 })
 ```
 
@@ -169,15 +171,15 @@ account, err := client.Accounts().RetrieveAccountById("account-id")
 ```go
 // Create transaction
 transaction, err := client.Transactions().CreateTransaction(bron.CreateTransaction{
-	ExternalID:      "unique-id",
-	AccountID:       "account-id",
-	TransactionType: "withdrawal",
-	Params: map[string]interface{}{
-		"amount":    "0.001",
-		"networkId": "testETH",
-		"symbol":    "ETH",
-		"toAddress": "0x...",
-	},
+ExternalID:      "unique-id",
+AccountID:       "account-id",
+TransactionType: "withdrawal",
+Params: map[string]interface{}{
+"amount":    "0.001",
+"networkId": "testETH",
+"symbol":    "ETH",
+"toAddress": "0x...",
+},
 })
 ```
 
@@ -228,8 +230,8 @@ All API methods return errors that should be checked:
 ```go
 accounts, err := client.Accounts().GetAccounts(nil)
 if err != nil {
-    log.Printf("API error: %v", err)
-    return
+log.Printf("API error: %v", err)
+return
 }
 ```
 
