@@ -29,8 +29,7 @@ func (api *AccountsAPI) GetAccounts() (*types.Accounts, error) {
 	return &result, err
 }
 
-
-func (api *AccountsAPI) RetrieveAccountById(accountId string) (*types.Account, error) {
+func (api *AccountsAPI) GetAccountById(accountId string) (*types.Account, error) {
 	path := fmt.Sprintf("/workspaces/%s/accounts/%s", api.workspaceID, accountId)
 	var result types.Account
 	options := http.RequestOptions{
@@ -40,5 +39,4 @@ func (api *AccountsAPI) RetrieveAccountById(accountId string) (*types.Account, e
 	err := api.http.Request(&result, options)
 	return &result, err
 }
-
 

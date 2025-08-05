@@ -496,6 +496,8 @@ func (g *Generator) generateMethod(op OpenApiOperation, method, route string) st
 
 	// Build path
 	pathExpr := route
+
+	hasWorkspaceParam := strings.Contains(pathExpr, "{workspaceId}")
 	pathExpr = strings.ReplaceAll(pathExpr, "{workspaceId}", "%s")
 	for _, param := range pathParams {
 		pathExpr = strings.ReplaceAll(pathExpr, "{"+param.name+"}", "%s")
@@ -503,7 +505,11 @@ func (g *Generator) generateMethod(op OpenApiOperation, method, route string) st
 
 	// HTTP request
 	sb.WriteString(fmt.Sprintf("\tpath := fmt.Sprintf(\"%s\"", pathExpr))
-	sb.WriteString(", api.workspaceID")
+
+	if hasWorkspaceParam {
+		sb.WriteString(", api.workspaceID")
+	}
+
 	for _, param := range pathParams {
 		sb.WriteString(fmt.Sprintf(", %s", param.name))
 	}
@@ -531,7 +537,7 @@ func (g *Generator) generateMethod(op OpenApiOperation, method, route string) st
 		sb.WriteString("\treturn api.http.Request(nil, options)\n")
 	}
 
-	sb.WriteString("}\n")
+	sb.WriteString("}")
 	return sb.String()
 }
 

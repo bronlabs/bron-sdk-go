@@ -29,4 +29,3 @@ func (api *AddressesAPI) GetDepositAddresses() (*types.Addresses, error) {
 	return &result, err
 }
 
-

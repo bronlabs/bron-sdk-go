@@ -29,7 +29,6 @@ func (api *AddressBookAPI) GetAddressBookRecords() (*types.AddressBookRecords, e
 	return &result, err
 }
 
-
 func (api *AddressBookAPI) CreateAddressBookRecord(body types.CreateAddressBookRecord) error {
 	path := fmt.Sprintf("/workspaces/%s/address-book-records", api.workspaceID)
 	options := http.RequestOptions{
@@ -39,7 +38,6 @@ func (api *AddressBookAPI) CreateAddressBookRecord(body types.CreateAddressBookR
 	}
 	return api.http.Request(nil, options)
 }
-
 
 func (api *AddressBookAPI) DeactivateAddressBookRecord(recordId string) (*types.Unit, error) {
 	path := fmt.Sprintf("/workspaces/%s/address-book-records/%s", api.workspaceID, recordId)
@@ -52,7 +50,6 @@ func (api *AddressBookAPI) DeactivateAddressBookRecord(recordId string) (*types.
 	return &result, err
 }
 
-
 func (api *AddressBookAPI) GetAddressBookRecordById(recordId string) (*types.AddressBookRecord, error) {
 	path := fmt.Sprintf("/workspaces/%s/address-book-records/%s", api.workspaceID, recordId)
 	var result types.AddressBookRecord
@@ -63,5 +60,4 @@ func (api *AddressBookAPI) GetAddressBookRecordById(recordId string) (*types.Add
 	err := api.http.Request(&result, options)
 	return &result, err
 }
-
 

@@ -19,7 +19,7 @@ func NewStakeAPI(http *http.Client, workspaceID string) *StakeAPI {
 }
 
 func (api *StakeAPI) GetStakes() (*types.Stakes, error) {
-	path := fmt.Sprintf("/stakes/", api.workspaceID)
+	path := fmt.Sprintf("/workspaces/%s/stakes", api.workspaceID)
 	var result types.Stakes
 	options := http.RequestOptions{
 		Method: "GET",
@@ -28,5 +28,4 @@ func (api *StakeAPI) GetStakes() (*types.Stakes, error) {
 	err := api.http.Request(&result, options)
 	return &result, err
 }
-
 

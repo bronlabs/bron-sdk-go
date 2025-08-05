@@ -17,5 +17,6 @@ const (
 	TransactionStatus_BROADCASTED TransactionStatus = "broadcasted"
 	TransactionStatus_MANUAL_RESOLVING TransactionStatus = "manual-resolving"
 	TransactionStatus_FAILED_ON_BLOCKCHAIN TransactionStatus = "failed-on-blockchain"
+	TransactionStatus_REMOVED_FROM_BLOCKCHAIN TransactionStatus = "removed-from-blockchain"
 	TransactionStatus_ERROR TransactionStatus = "error"
 )

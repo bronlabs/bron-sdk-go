@@ -29,7 +29,6 @@ func (api *TransactionLimitsAPI) GetTransactionLimits() (*types.TransactionLimit
 	return &result, err
 }
 
-
 func (api *TransactionLimitsAPI) GetTransactionLimitById(limitId string) (*types.TransactionLimit, error) {
 	path := fmt.Sprintf("/workspaces/%s/transaction-limits/%s", api.workspaceID, limitId)
 	var result types.TransactionLimit
@@ -40,5 +39,4 @@ func (api *TransactionLimitsAPI) GetTransactionLimitById(limitId string) (*types
 	err := api.http.Request(&result, options)
 	return &result, err
 }
-
 
