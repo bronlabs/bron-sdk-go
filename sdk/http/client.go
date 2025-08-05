@@ -37,7 +37,8 @@ func NewClient(baseURL, apiKey string) *Client {
 }
 
 func (c *Client) Request(result interface{}, options RequestOptions) error {
-	url := c.baseURL + options.Path
+	pathWithQuery := options.Path
+	url := c.baseURL + pathWithQuery
 	if options.Query != nil {
 		// Build query string from struct
 		queryBytes, _ := json.Marshal(options.Query)
@@ -51,7 +52,6 @@ func (c *Client) Request(result interface{}, options RequestOptions) error {
 				}
 				switch val := v.(type) {
 				case []interface{}:
-					// Join array elements with comma
 					strVals := make([]string, len(val))
 					for i, e := range val {
 						strVals[i] = fmt.Sprintf("%v", e)
@@ -62,6 +62,7 @@ func (c *Client) Request(result interface{}, options RequestOptions) error {
 				}
 			}
 			if qs := params.Encode(); qs != "" {
+				pathWithQuery += "?" + params.Encode()
 				url += "?" + qs
 			}
 		}
@@ -95,7 +96,7 @@ func (c *Client) Request(result interface{}, options RequestOptions) error {
 
 	token, err := auth.GenerateBronJwt(auth.BronJwtOptions{
 		Method:     options.Method,
-		Path:       options.Path,
+		Path:       pathWithQuery,
 		Body:       bodyStr,
 		Kid:        kid,
 		PrivateKey: c.apiKey,
