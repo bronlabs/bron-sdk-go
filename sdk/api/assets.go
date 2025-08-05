@@ -2,12 +2,13 @@ package api
 
 import (
 	"fmt"
-	"github.com/bronlabs/bron-sdk-go/sdk/types"
+
 	"github.com/bronlabs/bron-sdk-go/sdk/http"
+	"github.com/bronlabs/bron-sdk-go/sdk/types"
 )
 
 type AssetsAPI struct {
-	http *http.Client
+	http        *http.Client
 	workspaceID string
 }
 
@@ -94,4 +95,3 @@ func (api *AssetsAPI) GetSymbolById(symbolId string) (*types.Symbol, error) {
 	err := api.http.Request(&result, options)
 	return &result, err
 }
-

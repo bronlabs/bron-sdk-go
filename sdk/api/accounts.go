@@ -2,12 +2,13 @@ package api
 
 import (
 	"fmt"
-	"github.com/bronlabs/bron-sdk-go/sdk/types"
+
 	"github.com/bronlabs/bron-sdk-go/sdk/http"
+	"github.com/bronlabs/bron-sdk-go/sdk/types"
 )
 
 type AccountsAPI struct {
-	http *http.Client
+	http        *http.Client
 	workspaceID string
 }
 

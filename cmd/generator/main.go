@@ -549,15 +549,15 @@ func (g *Generator) generateAPIFile(fileName string, data *apiFileData) string {
 
 	// Imports
 	sb.WriteString("import (\n")
-	sb.WriteString("\t\"fmt\"\n")
-	sb.WriteString("\t\"github.com/bronlabs/bron-sdk-go/sdk/types\"\n")
+	sb.WriteString("\t\"fmt\"\n\n")
 	sb.WriteString("\t\"github.com/bronlabs/bron-sdk-go/sdk/http\"\n")
+	sb.WriteString("\t\"github.com/bronlabs/bron-sdk-go/sdk/types\"\n")
 	sb.WriteString(")\n\n")
 
 	// API class
 	className := g.getAPIClassNameFromFileName(fileName)
 	sb.WriteString(fmt.Sprintf("type %sAPI struct {\n", className))
-	sb.WriteString("\thttp *http.Client\n")
+	sb.WriteString("\thttp        *http.Client\n")
 	sb.WriteString("\tworkspaceID string\n")
 	sb.WriteString("}\n\n")
 
