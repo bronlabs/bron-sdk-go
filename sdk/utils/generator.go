@@ -150,7 +150,7 @@ func (g *Generator) generateEnum(name string, schema OpenApiSchema) string {
 }
 
 func (g *Generator) generateTypeAlias(name, refName string) string {
-	return fmt.Sprintf("package types\n\nimport \"github.com/bronlabs/bron-sdk-go/src/types\"\n\ntype %s = %s\n", name, refName)
+	return fmt.Sprintf("package types\n\nimport \"github.com/bronlabs/bron-sdk-go/sdk/types\"\n\ntype %s = %s\n", name, refName)
 }
 
 func (g *Generator) generateMapType(name string) string {
@@ -375,8 +375,8 @@ func (g *Generator) generateAPIFile(fileName string, data *apiFileData) string {
 	// Imports
 	sb.WriteString("import (\n")
 	sb.WriteString("\t\"fmt\"\n")
-	sb.WriteString("\t\"github.com/bronlabs/bron-sdk-go/src/types\"\n")
-	sb.WriteString("\t\"github.com/bronlabs/bron-sdk-go/src/http\"\n")
+	sb.WriteString("\t\"github.com/bronlabs/bron-sdk-go/sdk/types\"\n")
+	sb.WriteString("\t\"github.com/bronlabs/bron-sdk-go/sdk/http\"\n")
 	sb.WriteString(")\n\n")
 
 	// API class
