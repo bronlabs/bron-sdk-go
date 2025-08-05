@@ -18,9 +18,9 @@ func NewAssetsAPI(http *http.Client, workspaceID string) *AssetsAPI {
 	}
 }
 
-	func (api *AssetsAPI) GetPrices() (*types.SymbolMarketPrices, error) {
-		path := fmt.Sprintf("/dictionary/symbol-market-prices", api.workspaceID)
-		var result types.SymbolMarketPrices
+	func (api *AssetsAPI) GetNetworks() (*types.Networks, error) {
+		path := fmt.Sprintf("/dictionary/networks", api.workspaceID)
+		var result types.Networks
 		options := http.RequestOptions{
 			Method: "GET",
 			Path:   path,
@@ -42,9 +42,9 @@ func NewAssetsAPI(http *http.Client, workspaceID string) *AssetsAPI {
 	}
 
 
-	func (api *AssetsAPI) GetAssets() (*types.Assets, error) {
-		path := fmt.Sprintf("/dictionary/assets", api.workspaceID)
-		var result types.Assets
+	func (api *AssetsAPI) GetPrices() (*types.SymbolMarketPrices, error) {
+		path := fmt.Sprintf("/dictionary/symbol-market-prices", api.workspaceID)
+		var result types.SymbolMarketPrices
 		options := http.RequestOptions{
 			Method: "GET",
 			Path:   path,
@@ -54,9 +54,9 @@ func NewAssetsAPI(http *http.Client, workspaceID string) *AssetsAPI {
 	}
 
 
-	func (api *AssetsAPI) GetNetworks() (*types.Networks, error) {
-		path := fmt.Sprintf("/dictionary/networks", api.workspaceID)
-		var result types.Networks
+	func (api *AssetsAPI) GetAssets() (*types.Assets, error) {
+		path := fmt.Sprintf("/dictionary/assets", api.workspaceID)
+		var result types.Assets
 		options := http.RequestOptions{
 			Method: "GET",
 			Path:   path,

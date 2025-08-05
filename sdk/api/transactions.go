@@ -18,6 +18,19 @@ func NewTransactionsAPI(http *http.Client, workspaceID string) *TransactionsAPI 
 	}
 }
 
+	func (api *TransactionsAPI) DryRunTransaction(body types.CreateTransaction) (*types.Transaction, error) {
+		path := fmt.Sprintf("/workspaces/%s/transactions/dry-run", api.workspaceID)
+		var result types.Transaction
+		options := http.RequestOptions{
+			Method: "POST",
+			Path:   path,
+			Body:   body,
+		}
+		err := api.http.Request(&result, options)
+		return &result, err
+	}
+
+
 	func (api *TransactionsAPI) CancelTransaction(transactionId string, body types.CancelTransaction) (*types.Transaction, error) {
 		path := fmt.Sprintf("/workspaces/%s/transactions/%s/cancel", api.workspaceID, transactionId)
 		var result types.Transaction
@@ -36,42 +49,6 @@ func NewTransactionsAPI(http *http.Client, workspaceID string) *TransactionsAPI 
 		var result types.Transactions
 		options := http.RequestOptions{
 			Method: "GET",
-			Path:   path,
-		}
-		err := api.http.Request(&result, options)
-		return &result, err
-	}
-
-
-	func (api *TransactionsAPI) DryRunTransaction(body types.CreateTransaction) (*types.Transaction, error) {
-		path := fmt.Sprintf("/workspaces/%s/transactions/dry-run", api.workspaceID)
-		var result types.Transaction
-		options := http.RequestOptions{
-			Method: "POST",
-			Path:   path,
-			Body:   body,
-		}
-		err := api.http.Request(&result, options)
-		return &result, err
-	}
-
-
-	func (api *TransactionsAPI) CreateTransaction(body types.CreateTransaction) error {
-		path := fmt.Sprintf("/workspaces/%s/transactions/", api.workspaceID)
-		options := http.RequestOptions{
-			Method: "POST",
-			Path:   path,
-			Body:   body,
-		}
-		return api.http.Request(nil, options)
-	}
-
-
-	func (api *TransactionsAPI) CreateSigningRequest(transactionId string) (*types.Transaction, error) {
-		path := fmt.Sprintf("/workspaces/%s/transactions/%s/create-signing-request", api.workspaceID, transactionId)
-		var result types.Transaction
-		options := http.RequestOptions{
-			Method: "POST",
 			Path:   path,
 		}
 		err := api.http.Request(&result, options)
@@ -99,6 +76,29 @@ func NewTransactionsAPI(http *http.Client, workspaceID string) *TransactionsAPI 
 		}
 		err := api.http.Request(&result, options)
 		return &result, err
+	}
+
+
+	func (api *TransactionsAPI) CreateSigningRequest(transactionId string) (*types.Transaction, error) {
+		path := fmt.Sprintf("/workspaces/%s/transactions/%s/create-signing-request", api.workspaceID, transactionId)
+		var result types.Transaction
+		options := http.RequestOptions{
+			Method: "POST",
+			Path:   path,
+		}
+		err := api.http.Request(&result, options)
+		return &result, err
+	}
+
+
+	func (api *TransactionsAPI) CreateTransaction(body types.CreateTransaction) error {
+		path := fmt.Sprintf("/workspaces/%s/transactions/", api.workspaceID)
+		options := http.RequestOptions{
+			Method: "POST",
+			Path:   path,
+			Body:   body,
+		}
+		return api.http.Request(nil, options)
 	}
 
 

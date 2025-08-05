@@ -1,19 +1,19 @@
 package types
 
 type Transaction struct {
+	ExternalId string `json:"externalId"`
+	AccountType AccountType `json:"accountType"`
+	Extra *TransactionExtra `json:"extra"`
 	TransactionId string `json:"transactionId"`
 	WorkspaceId string `json:"workspaceId"`
-	Status TransactionStatus `json:"status"`
-	CreatedAt string `json:"createdAt"`
-	ExpiresAt *string `json:"expiresAt"`
-	Extra *TransactionExtra `json:"extra"`
-	TerminatedAt *string `json:"terminatedAt"`
 	AccountId string `json:"accountId"`
-	AccountType AccountType `json:"accountType"`
 	Embedded *TransactionEmbedded `json:"embedded"`
-	Params interface{} `json:"params"`
+	TerminatedAt *string `json:"terminatedAt"`
 	TransactionType TransactionType `json:"transactionType"`
 	UpdatedAt *string `json:"updatedAt"`
 	CreatedBy *string `json:"createdBy"`
-	ExternalId string `json:"externalId"`
+	ExpiresAt *string `json:"expiresAt"`
+	Params interface{} `json:"params"`
+	Status TransactionStatus `json:"status"`
+	CreatedAt string `json:"createdAt"`
 }

@@ -18,9 +18,9 @@ func NewTransactionLimitsAPI(http *http.Client, workspaceID string) *Transaction
 	}
 }
 
-	func (api *TransactionLimitsAPI) GetTransactionLimitById(limitId string) (*types.TransactionLimit, error) {
-		path := fmt.Sprintf("/workspaces/%s/transaction-limits/%s", api.workspaceID, limitId)
-		var result types.TransactionLimit
+	func (api *TransactionLimitsAPI) GetTransactionLimits() (*types.TransactionLimits, error) {
+		path := fmt.Sprintf("/workspaces/%s/transaction-limits", api.workspaceID)
+		var result types.TransactionLimits
 		options := http.RequestOptions{
 			Method: "GET",
 			Path:   path,
@@ -30,9 +30,9 @@ func NewTransactionLimitsAPI(http *http.Client, workspaceID string) *Transaction
 	}
 
 
-	func (api *TransactionLimitsAPI) GetTransactionLimits() (*types.TransactionLimits, error) {
-		path := fmt.Sprintf("/workspaces/%s/transaction-limits", api.workspaceID)
-		var result types.TransactionLimits
+	func (api *TransactionLimitsAPI) GetTransactionLimitById(limitId string) (*types.TransactionLimit, error) {
+		path := fmt.Sprintf("/workspaces/%s/transaction-limits/%s", api.workspaceID, limitId)
+		var result types.TransactionLimit
 		options := http.RequestOptions{
 			Method: "GET",
 			Path:   path,

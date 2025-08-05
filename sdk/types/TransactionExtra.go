@@ -1,18 +1,18 @@
 package types
 
 type TransactionExtra struct {
-	BlockchainDetails *[]BlockchainTxDetails `json:"blockchainDetails"`
-	BlockchainRequest *BlockchainRequest `json:"blockchainRequest"`
+	Confirmations *string `json:"confirmations"`
 	DepositTransactionId *string `json:"depositTransactionId"`
 	Description *string `json:"description"`
 	FromAccountId *string `json:"fromAccountId"`
-	Memo *string `json:"memo"`
-	ToAccountId *string `json:"toAccountId"`
-	Confirmations *string `json:"confirmations"`
-	ExternalBroadcast *bool `json:"externalBroadcast"`
 	FromAddress *string `json:"fromAddress"`
+	Memo *string `json:"memo"`
+	Approvers *TransactionApprovers `json:"approvers"`
+	ExternalBroadcast *bool `json:"externalBroadcast"`
 	SigningRequestId *string `json:"signingRequestId"`
+	ToAccountId *string `json:"toAccountId"`
 	ToAddress *string `json:"toAddress"`
 	WithdrawTransactionId *string `json:"withdrawTransactionId"`
-	Approvers *TransactionApprovers `json:"approvers"`
+	BlockchainDetails *[]BlockchainTxDetails `json:"blockchainDetails"`
+	BlockchainRequest *BlockchainRequest `json:"blockchainRequest"`
 }

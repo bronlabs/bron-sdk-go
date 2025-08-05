@@ -314,9 +314,9 @@ func (g *Generator) generateMethod(op OpenApiOperation, method, route string) st
 
 	// Method signature
 	if returnType != "" {
-		sb.WriteString(fmt.Sprintf("\tfunc (api *%sAPI) %s(", g.getAPIClassName(op), g.toProperPascalCase(funcName)))
+		sb.WriteString(fmt.Sprintf("func (api *%sAPI) %s(", g.getAPIClassName(op), g.toProperPascalCase(funcName)))
 	} else {
-		sb.WriteString(fmt.Sprintf("\tfunc (api *%sAPI) %s(", g.getAPIClassName(op), g.toProperPascalCase(funcName)))
+		sb.WriteString(fmt.Sprintf("func (api *%sAPI) %s(", g.getAPIClassName(op), g.toProperPascalCase(funcName)))
 	}
 
 	// Add path parameters
@@ -365,28 +365,28 @@ func (g *Generator) generateMethod(op OpenApiOperation, method, route string) st
 	sb.WriteString(")\n")
 
 	if returnType != "" {
-		sb.WriteString(fmt.Sprintf("\t\tvar result types.%s\n", returnType))
-		sb.WriteString("\t\toptions := http.RequestOptions{\n")
-		sb.WriteString(fmt.Sprintf("\t\t\tMethod: \"%s\",\n", strings.ToUpper(method)))
-		sb.WriteString("\t\t\tPath:   path,\n")
+		sb.WriteString(fmt.Sprintf("\tvar result types.%s\n", returnType))
+		sb.WriteString("\toptions := http.RequestOptions{\n")
+		sb.WriteString(fmt.Sprintf("\t\tMethod: \"%s\",\n", strings.ToUpper(method)))
+		sb.WriteString("\t\tPath:   path,\n")
 		if paramType != "interface{}" {
-			sb.WriteString("\t\t\tBody:   body,\n")
+			sb.WriteString("\t\tBody:   body,\n")
 		}
-		sb.WriteString("\t\t}\n")
-		sb.WriteString("\t\terr := api.http.Request(&result, options)\n")
-		sb.WriteString("\t\treturn &result, err\n")
+		sb.WriteString("\t}\n")
+		sb.WriteString("\terr := api.http.Request(&result, options)\n")
+		sb.WriteString("\treturn &result, err\n")
 	} else {
-		sb.WriteString("\t\toptions := http.RequestOptions{\n")
+		sb.WriteString("\toptions := http.RequestOptions{\n")
 		sb.WriteString(fmt.Sprintf("\t\t\tMethod: \"%s\",\n", strings.ToUpper(method)))
-		sb.WriteString("\t\t\tPath:   path,\n")
+		sb.WriteString("\t\tPath:   path,\n")
 		if paramType != "interface{}" {
-			sb.WriteString("\t\t\tBody:   body,\n")
+			sb.WriteString("\t\tBody:   body,\n")
 		}
-		sb.WriteString("\t\t}\n")
-		sb.WriteString("\t\treturn api.http.Request(nil, options)\n")
+		sb.WriteString("\t}\n")
+		sb.WriteString("\treturn api.http.Request(nil, options)\n")
 	}
 
-	sb.WriteString("\t}\n")
+	sb.WriteString("}\n")
 	return sb.String()
 }
 
