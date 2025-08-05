@@ -1,4 +1,4 @@
-package utils
+package main
 
 import (
 	"encoding/json"
@@ -54,6 +54,30 @@ type Generator struct {
 	spec     OpenApiSpec
 	typesDir string
 	apiDir   string
+}
+
+func main() {
+	if len(os.Args) < 4 {
+		fmt.Println("Usage: generator <spec-file> <types-dir> <api-dir>")
+		os.Exit(1)
+	}
+
+	specPath := os.Args[1]
+	typesDir := os.Args[2]
+	apiDir := os.Args[3]
+
+	generator, err := NewGenerator(specPath, typesDir, apiDir)
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "Error creating generator: %v\n", err)
+		os.Exit(1)
+	}
+
+	if err := generator.Generate(); err != nil {
+		fmt.Fprintf(os.Stderr, "Error generating code: %v\n", err)
+		os.Exit(1)
+	}
+
+	fmt.Println("Code generation completed successfully!")
 }
 
 func NewGenerator(specPath, typesDir, apiDir string) (*Generator, error) {
@@ -525,28 +549,4 @@ func (g *Generator) toProperPascalCase(str string) string {
 	}
 
 	return str
-}
-
-func GenerateMain() {
-	if len(os.Args) < 4 {
-		fmt.Println("Usage: generator <spec-file> <types-dir> <api-dir>")
-		os.Exit(1)
-	}
-
-	specPath := os.Args[1]
-	typesDir := os.Args[2]
-	apiDir := os.Args[3]
-
-	generator, err := NewGenerator(specPath, typesDir, apiDir)
-	if err != nil {
-		fmt.Fprintf(os.Stderr, "Error creating generator: %v\n", err)
-		os.Exit(1)
-	}
-
-	if err := generator.Generate(); err != nil {
-		fmt.Fprintf(os.Stderr, "Error generating code: %v\n", err)
-		os.Exit(1)
-	}
-
-	fmt.Println("Code generation completed successfully!")
 }

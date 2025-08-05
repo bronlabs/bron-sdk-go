@@ -1,18 +1,18 @@
 package types
 
 type TransactionLimit struct {
-	CreatedAt string `json:"createdAt"`
-	LimitRule LimitRule `json:"limitRule"`
-	LimitType TransactionLimitType `json:"limitType"`
-	Status TransactionLimitStatus `json:"status"`
-	TransactionParams LimitTransactionParams `json:"transactionParams"`
 	UpdatedAt *string `json:"updatedAt"`
-	AppliesTo LimitAppliesTo `json:"appliesTo"`
+	WorkspaceId string `json:"workspaceId"`
+	CreatedAt string `json:"createdAt"`
 	CreatedBy *string `json:"createdBy"`
 	Destinations LimitDestinations `json:"destinations"`
+	LimitRule LimitRule `json:"limitRule"`
+	Sources LimitSources `json:"sources"`
+	Status TransactionLimitStatus `json:"status"`
+	UpdatedBy *string `json:"updatedBy"`
+	AppliesTo LimitAppliesTo `json:"appliesTo"`
 	ExternalId string `json:"externalId"`
 	LimitId string `json:"limitId"`
-	Sources LimitSources `json:"sources"`
-	UpdatedBy *string `json:"updatedBy"`
-	WorkspaceId string `json:"workspaceId"`
+	LimitType TransactionLimitType `json:"limitType"`
+	TransactionParams LimitTransactionParams `json:"transactionParams"`
 }
