@@ -6,19 +6,21 @@ import (
 	"os"
 	"path/filepath"
 	"strings"
+
+	"github.com/iancoleman/orderedmap"
 )
 
 type OpenApiSchema struct {
-	Type                 string                   `json:"type,omitempty"`
-	Enum                 []interface{}            `json:"enum,omitempty"`
-	Ref                  string                   `json:"$ref,omitempty"`
-	Properties           map[string]OpenApiSchema `json:"properties,omitempty"`
-	AdditionalProperties interface{}              `json:"additionalProperties,omitempty"`
-	Required             []string                 `json:"required,omitempty"`
-	Items                *OpenApiSchema           `json:"items,omitempty"`
-	AllOf                []OpenApiSchema          `json:"allOf,omitempty"`
-	OneOf                []OpenApiSchema          `json:"oneOf,omitempty"`
-	AnyOf                []OpenApiSchema          `json:"anyOf,omitempty"`
+	Type                 string                `json:"type,omitempty"`
+	Enum                 []interface{}         `json:"enum,omitempty"`
+	Ref                  string                `json:"$ref,omitempty"`
+	Properties           orderedmap.OrderedMap `json:"properties,omitempty"`
+	AdditionalProperties interface{}           `json:"additionalProperties,omitempty"`
+	Required             []string              `json:"required,omitempty"`
+	Items                *OpenApiSchema        `json:"items,omitempty"`
+	AllOf                []OpenApiSchema       `json:"allOf,omitempty"`
+	OneOf                []OpenApiSchema       `json:"oneOf,omitempty"`
+	AnyOf                []OpenApiSchema       `json:"anyOf,omitempty"`
 }
 
 type OpenApiOperation struct {
@@ -43,17 +45,29 @@ type OpenApiOperation struct {
 	} `json:"responses,omitempty"`
 }
 
+type SchemaEntry struct {
+	Name   string
+	Schema OpenApiSchema
+}
+
+type PathEntry struct {
+	Route   string
+	Methods orderedmap.OrderedMap
+}
+
 type OpenApiSpec struct {
 	Components struct {
-		Schemas map[string]OpenApiSchema `json:"schemas"`
+		Schemas []SchemaEntry `json:"schemas"`
 	} `json:"components"`
-	Paths map[string]map[string]OpenApiOperation `json:"paths"`
+	Paths []PathEntry `json:"paths"`
 }
 
 type Generator struct {
-	spec     OpenApiSpec
-	typesDir string
-	apiDir   string
+	spec        OpenApiSpec
+	schemaOrder []string
+	pathOrder   []string
+	typesDir    string
+	apiDir      string
 }
 
 func main() {
@@ -86,9 +100,83 @@ func NewGenerator(specPath, typesDir, apiDir string) (*Generator, error) {
 		return nil, fmt.Errorf("failed to read spec file: %w", err)
 	}
 
-	var spec OpenApiSpec
-	if err := json.Unmarshal(data, &spec); err != nil {
+	// Parse JSON with orderedmap to preserve order
+	var rawSpec orderedmap.OrderedMap
+	if err := json.Unmarshal(data, &rawSpec); err != nil {
 		return nil, fmt.Errorf("failed to parse spec file: %w", err)
+	}
+
+	// Parse schemas and preserve order
+	var schemas []SchemaEntry
+	if components, ok := rawSpec.Get("components"); ok {
+		if componentsMap, ok := components.(orderedmap.OrderedMap); ok {
+			if schemasRaw, ok := componentsMap.Get("schemas"); ok {
+				if schemasMap, ok := schemasRaw.(orderedmap.OrderedMap); ok {
+					for _, name := range schemasMap.Keys() {
+						schemaRaw, _ := schemasMap.Get(name)
+						schemaBytes, _ := json.Marshal(schemaRaw)
+						var schemaMap orderedmap.OrderedMap
+						json.Unmarshal(schemaBytes, &schemaMap)
+
+						// Convert to OpenApiSchema while preserving order
+						var schema OpenApiSchema
+						if typeVal, ok := schemaMap.Get("type"); ok {
+							if typeStr, ok := typeVal.(string); ok {
+								schema.Type = typeStr
+							}
+						}
+						if refVal, ok := schemaMap.Get("$ref"); ok {
+							if refStr, ok := refVal.(string); ok {
+								schema.Ref = refStr
+							}
+						}
+						if enumVal, ok := schemaMap.Get("enum"); ok {
+							if enumArr, ok := enumVal.([]interface{}); ok {
+								schema.Enum = enumArr
+							}
+						}
+						if requiredVal, ok := schemaMap.Get("required"); ok {
+							if requiredArr, ok := requiredVal.([]interface{}); ok {
+								for _, req := range requiredArr {
+									if reqStr, ok := req.(string); ok {
+										schema.Required = append(schema.Required, reqStr)
+									}
+								}
+							}
+						}
+						if propsVal, ok := schemaMap.Get("properties"); ok {
+							if propsMap, ok := propsVal.(orderedmap.OrderedMap); ok {
+								schema.Properties = propsMap
+							}
+						}
+						schemas = append(schemas, SchemaEntry{Name: name, Schema: schema})
+					}
+				}
+			}
+		}
+	}
+
+	// Parse paths and preserve order
+	var paths []PathEntry
+	if pathsRaw, ok := rawSpec.Get("paths"); ok {
+		if pathsMap, ok := pathsRaw.(orderedmap.OrderedMap); ok {
+			for _, route := range pathsMap.Keys() {
+				methodsRaw, _ := pathsMap.Get(route)
+				methodsBytes, _ := json.Marshal(methodsRaw)
+				var methods orderedmap.OrderedMap
+				json.Unmarshal(methodsBytes, &methods)
+				paths = append(paths, PathEntry{Route: route, Methods: methods})
+			}
+		}
+	}
+
+	spec := OpenApiSpec{
+		Components: struct {
+			Schemas []SchemaEntry `json:"schemas"`
+		}{
+			Schemas: schemas,
+		},
+		Paths: paths,
 	}
 
 	return &Generator{
@@ -120,9 +208,9 @@ func (g *Generator) generateTypes() error {
 		return fmt.Errorf("failed to clear types directory: %w", err)
 	}
 
-	for name, schema := range g.spec.Components.Schemas {
-		content := g.generateTypeDefinition(name, schema)
-		filename := filepath.Join(g.typesDir, name+".go")
+	for _, entry := range g.spec.Components.Schemas {
+		content := g.generateTypeDefinition(entry.Name, entry.Schema)
+		filename := filepath.Join(g.typesDir, entry.Name+".go")
 		if err := os.WriteFile(filename, []byte(content), 0644); err != nil {
 			return fmt.Errorf("failed to write type file %s: %w", filename, err)
 		}
@@ -144,7 +232,7 @@ func (g *Generator) generateTypeDefinition(name string, schema OpenApiSchema) st
 	if g.isEmptyObject(schema) {
 		return g.generateMapType(name)
 	}
-	if schema.Type == "object" || schema.Properties != nil {
+	if schema.Type == "object" || len(schema.Properties.Keys()) > 0 {
 		return g.generateStruct(name, schema)
 	}
 	return g.generateInterfaceType(name)
@@ -190,10 +278,63 @@ func (g *Generator) generateStruct(name string, schema OpenApiSchema) string {
 	sb.WriteString("package types\n\n")
 	sb.WriteString(fmt.Sprintf("type %s struct {\n", name))
 
-	if schema.Properties != nil {
-		for propName, propSchema := range schema.Properties {
+	if len(schema.Properties.Keys()) > 0 {
+		for _, propName := range schema.Properties.Keys() {
+			propNameStr := propName
+			propSchemaRaw, _ := schema.Properties.Get(propNameStr)
+			// Convert to orderedmap to preserve order
+			propSchemaBytes, _ := json.Marshal(propSchemaRaw)
+			var propSchemaMap orderedmap.OrderedMap
+			json.Unmarshal(propSchemaBytes, &propSchemaMap)
+
+			// Extract type, ref, and items directly from the ordered map
+			var propType, propRef string
+			if typeVal, ok := propSchemaMap.Get("type"); ok {
+				if typeStr, ok := typeVal.(string); ok {
+					propType = typeStr
+				}
+			}
+			if refVal, ok := propSchemaMap.Get("$ref"); ok {
+				if refStr, ok := refVal.(string); ok {
+					propRef = refStr
+				}
+			}
+
+			// Parse items for array types
+			var itemsSchema *OpenApiSchema
+			if propType == "array" {
+				if itemsVal, ok := propSchemaMap.Get("items"); ok {
+					itemsBytes, _ := json.Marshal(itemsVal)
+					var itemsMap orderedmap.OrderedMap
+					json.Unmarshal(itemsBytes, &itemsMap)
+
+					var itemsType, itemsRef string
+					if itemsTypeVal, ok := itemsMap.Get("type"); ok {
+						if itemsTypeStr, ok := itemsTypeVal.(string); ok {
+							itemsType = itemsTypeStr
+						}
+					}
+					if itemsRefVal, ok := itemsMap.Get("$ref"); ok {
+						if itemsRefStr, ok := itemsRefVal.(string); ok {
+							itemsRef = itemsRefStr
+						}
+					}
+
+					itemsSchema = &OpenApiSchema{
+						Type: itemsType,
+						Ref:  itemsRef,
+					}
+				}
+			}
+
+			// Create a schema for type resolution
+			propSchema := OpenApiSchema{
+				Type:  propType,
+				Ref:   propRef,
+				Items: itemsSchema,
+			}
 			goType := g.resolveType(propSchema)
-			jsonTag := fmt.Sprintf("`json:\"%s\"`", propName)
+			jsonTag := fmt.Sprintf("`json:\"%s\"`", propNameStr)
 
 			// Check if field is required
 			isRequired := false
@@ -258,9 +399,13 @@ func (g *Generator) generateAPI() error {
 
 	fileData := make(map[string]*apiFileData)
 
-	// Process all paths and methods
-	for route, methods := range g.spec.Paths {
-		for method, op := range methods {
+	// Process all paths and methods in original order
+	for _, pathEntry := range g.spec.Paths {
+		for _, method := range pathEntry.Methods.Keys() {
+			opRaw, _ := pathEntry.Methods.Get(method)
+			opBytes, _ := json.Marshal(opRaw)
+			var op OpenApiOperation
+			json.Unmarshal(opBytes, &op)
 			if op.Summary == "" {
 				continue
 			}
@@ -274,7 +419,7 @@ func (g *Generator) generateAPI() error {
 			}
 
 			// Generate method
-			methodCode := g.generateMethod(op, method, route)
+			methodCode := g.generateMethod(op, method, pathEntry.Route)
 			fileData[fileName].methods = append(fileData[fileName].methods, methodCode)
 
 			// Add required types
@@ -284,7 +429,7 @@ func (g *Generator) generateAPI() error {
 		}
 	}
 
-	// Write API files
+	// Write API files in original order
 	for fileName, data := range fileData {
 		content := g.generateAPIFile(fileName, data)
 		filename := filepath.Join(g.apiDir, fileName+".go")
@@ -357,7 +502,7 @@ func (g *Generator) generateMethod(op OpenApiOperation, method, route string) st
 	}
 
 	// HTTP request
-	sb.WriteString(fmt.Sprintf("\t\tpath := fmt.Sprintf(\"%s\"", pathExpr))
+	sb.WriteString(fmt.Sprintf("\tpath := fmt.Sprintf(\"%s\"", pathExpr))
 	sb.WriteString(", api.workspaceID")
 	for _, param := range pathParams {
 		sb.WriteString(fmt.Sprintf(", %s", param.name))
@@ -508,8 +653,8 @@ func (g *Generator) clearDirectory(dir, extension string) error {
 }
 
 func (g *Generator) isEmptyObject(schema OpenApiSchema) bool {
-	return (schema.Type == "object" || schema.Properties != nil || schema.AdditionalProperties != nil) &&
-		len(schema.Properties) == 0 &&
+	return (schema.Type == "object" || len(schema.Properties.Keys()) > 0 || schema.AdditionalProperties != nil) &&
+		len(schema.Properties.Keys()) == 0 &&
 		(schema.AdditionalProperties == nil || schema.AdditionalProperties == true)
 }
 

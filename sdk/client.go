@@ -12,43 +12,42 @@ type BronClientConfig struct {
 }
 
 type BronClient struct {
-	WorkspaceID string
 	http        *http.Client
+	workspaceID string
+	baseURL     string
+	apiKey      string
 
-	// API instances
+	// API clients
 	Accounts          *api.AccountsAPI
-	Transactions      *api.TransactionsAPI
 	Balances          *api.BalancesAPI
-	Workspaces        *api.WorkspacesAPI
-	AddressBook       *api.AddressBookAPI
-	Assets            *api.AssetsAPI
+	Transactions      *api.TransactionsAPI
 	Addresses         *api.AddressesAPI
+	Assets            *api.AssetsAPI
+	Workspaces        *api.WorkspacesAPI
 	TransactionLimits *api.TransactionLimitsAPI
+	AddressBook       *api.AddressBookAPI
 	Stake             *api.StakeAPI
 }
 
 func NewBronClient(config BronClientConfig) *BronClient {
-	baseURL := config.BaseURL
-	if baseURL == "" {
-		baseURL = "https://api.bron.org"
-	}
-
-	httpClient := http.NewClient(baseURL, config.APIKey)
+	httpClient := http.NewClient(config.BaseURL, config.APIKey)
 
 	client := &BronClient{
-		WorkspaceID: config.WorkspaceID,
 		http:        httpClient,
+		workspaceID: config.WorkspaceID,
+		baseURL:     config.BaseURL,
+		apiKey:      config.APIKey,
 	}
 
-	// Initialize API instances
+	// Initialize API clients
 	client.Accounts = api.NewAccountsAPI(httpClient, config.WorkspaceID)
-	client.Transactions = api.NewTransactionsAPI(httpClient, config.WorkspaceID)
 	client.Balances = api.NewBalancesAPI(httpClient, config.WorkspaceID)
-	client.Workspaces = api.NewWorkspacesAPI(httpClient, config.WorkspaceID)
-	client.AddressBook = api.NewAddressBookAPI(httpClient, config.WorkspaceID)
-	client.Assets = api.NewAssetsAPI(httpClient, config.WorkspaceID)
+	client.Transactions = api.NewTransactionsAPI(httpClient, config.WorkspaceID)
 	client.Addresses = api.NewAddressesAPI(httpClient, config.WorkspaceID)
+	client.Assets = api.NewAssetsAPI(httpClient, config.WorkspaceID)
+	client.Workspaces = api.NewWorkspacesAPI(httpClient, config.WorkspaceID)
 	client.TransactionLimits = api.NewTransactionLimitsAPI(httpClient, config.WorkspaceID)
+	client.AddressBook = api.NewAddressBookAPI(httpClient, config.WorkspaceID)
 	client.Stake = api.NewStakeAPI(httpClient, config.WorkspaceID)
 
 	return client

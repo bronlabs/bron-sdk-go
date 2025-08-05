@@ -6,107 +6,84 @@ import (
 	"fmt"
 	"io"
 	"net/http"
-	"net/url"
-	"strings"
 	"time"
 
-	"github.com/bronlabs/bron-sdk-go/sdk/utils"
+	"github.com/bronlabs/bron-sdk-go/sdk/auth"
 )
 
 type RequestOptions struct {
 	Method string
 	Path   string
 	Body   interface{}
-	Query  map[string]interface{}
 }
 
 type Client struct {
-	baseUrl    string
-	apiKeyJwk  string
 	httpClient *http.Client
+	baseURL    string
+	apiKey     string
 }
 
-func NewClient(baseUrl, apiKeyJwk string) *Client {
+func NewClient(baseURL, apiKey string) *Client {
 	return &Client{
-		baseUrl:   baseUrl,
-		apiKeyJwk: apiKeyJwk,
 		httpClient: &http.Client{
 			Timeout: 30 * time.Second,
 		},
+		baseURL: baseURL,
+		apiKey:  apiKey,
 	}
 }
 
-func (h *Client) Request(result interface{}, options RequestOptions) error {
-	fullPath := options.Path
+func (c *Client) Request(result interface{}, options RequestOptions) error {
+	url := c.baseURL + options.Path
 
-	if options.Query != nil && len(options.Query) > 0 {
-		params := url.Values{}
-		for key, value := range options.Query {
-			switch v := value.(type) {
-			case []string:
-				params.Set(key, strings.Join(v, ","))
-			case string:
-				params.Set(key, v)
-			default:
-				if str, err := json.Marshal(v); err == nil {
-					params.Set(key, string(str))
-				}
-			}
+	var body io.Reader
+	if options.Body != nil {
+		jsonBody, err := json.Marshal(options.Body)
+		if err != nil {
+			return fmt.Errorf("failed to marshal request body: %w", err)
 		}
-		fullPath += "?" + params.Encode()
+		body = bytes.NewBuffer(jsonBody)
 	}
 
-	requestURL := h.baseUrl + fullPath
-
-	// Generate JWT for authentication
-	privateKey, kid, err := utils.ParseJwkEcPrivateKey(h.apiKeyJwk)
+	req, err := http.NewRequest(options.Method, url, body)
 	if err != nil {
-		return fmt.Errorf("failed to parse JWK: %w", err)
+		return fmt.Errorf("failed to create request: %w", err)
 	}
 
+	// Generate Bron JWT
 	bodyStr := ""
 	if options.Body != nil {
-		bodyBytes, err := json.Marshal(options.Body)
-		if err != nil {
-			return fmt.Errorf("failed to marshal body: %w", err)
-		}
-		bodyStr = string(bodyBytes)
+		jsonBody, _ := json.Marshal(options.Body)
+		bodyStr = string(jsonBody)
 	}
 
-	jwt, err := utils.GenerateBronJwt(utils.BronJwtOptions{
+	// Parse JWK to get kid
+	var jwk map[string]interface{}
+	json.Unmarshal([]byte(c.apiKey), &jwk)
+	kid, _ := jwk["kid"].(string)
+
+	token, err := auth.GenerateBronJwt(auth.BronJwtOptions{
 		Method:     options.Method,
-		Path:       fullPath,
+		Path:       options.Path,
 		Body:       bodyStr,
 		Kid:        kid,
-		PrivateKey: privateKey,
+		PrivateKey: c.apiKey,
 	})
 	if err != nil {
 		return fmt.Errorf("failed to generate JWT: %w", err)
 	}
 
-	var body io.Reader
-	if options.Body != nil {
-		bodyBytes, _ := json.Marshal(options.Body)
-		body = bytes.NewBuffer(bodyBytes)
-	}
+	// Add headers
+	req.Header.Set("Content-Type", "application/json")
+	req.Header.Set("Authorization", "ApiKey "+token)
 
-	req, err := http.NewRequest(options.Method, requestURL, body)
-	if err != nil {
-		return fmt.Errorf("failed to create request: %w", err)
-	}
-
-	req.Header.Set("Authorization", "ApiKey "+jwt)
-	if options.Body != nil {
-		req.Header.Set("Content-Type", "application/json")
-	}
-
-	resp, err := h.httpClient.Do(req)
+	resp, err := c.httpClient.Do(req)
 	if err != nil {
 		return fmt.Errorf("failed to execute request: %w", err)
 	}
 	defer resp.Body.Close()
 
-	if resp.StatusCode < 200 || resp.StatusCode >= 300 {
+	if resp.StatusCode >= 400 {
 		bodyBytes, _ := io.ReadAll(resp.Body)
 		return fmt.Errorf("HTTP %d: %s", resp.StatusCode, string(bodyBytes))
 	}
