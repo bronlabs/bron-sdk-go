@@ -1,6 +1,6 @@
 package types
 
 type BlockchainTxDetails struct {
-	BlockchainTxId *string `json:"blockchainTxId"`
-	NetworkId *string `json:"networkId"`
+	BlockchainTxId *string `json:"blockchainTxId,omitempty"`
+	NetworkId *string `json:"networkId,omitempty"`
 }

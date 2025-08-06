@@ -2,10 +2,10 @@ package types
 
 type Asset struct {
 	AssetId string `json:"assetId"`
-	AssetType *AssetType `json:"assetType"`
-	ContractInformation *SmartContractInformation `json:"contractInformation"`
-	Decimals *string `json:"decimals"`
-	NetworkId *string `json:"networkId"`
-	SymbolId *string `json:"symbolId"`
-	Verified *bool `json:"verified"`
+	AssetType *AssetType `json:"assetType,omitempty"`
+	ContractInformation *SmartContractInformation `json:"contractInformation,omitempty"`
+	Decimals *string `json:"decimals,omitempty"`
+	NetworkId *string `json:"networkId,omitempty"`
+	SymbolId *string `json:"symbolId,omitempty"`
+	Verified *bool `json:"verified,omitempty"`
 }

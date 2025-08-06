@@ -1,6 +1,6 @@
 package types
 
-type AddressBookQuery struct {
+type AddressBookRecordsQuery struct {
 	RecordIds *[]string `json:"recordIds,omitempty"`
 	NetworkIds *[]string `json:"networkIds,omitempty"`
 	Addresses *[]string `json:"addresses,omitempty"`

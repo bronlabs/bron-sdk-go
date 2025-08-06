@@ -1,13 +1,13 @@
 package types
 
 type Network struct {
-	AddressExplorerUrl *string `json:"addressExplorerUrl"`
-	Confirmations *string `json:"confirmations"`
-	ExplorerUrl *string `json:"explorerUrl"`
-	IsTestnet *bool `json:"isTestnet"`
-	Name *string `json:"name"`
-	NativeAssetId *string `json:"nativeAssetId"`
-	NativeAssetSymbol *string `json:"nativeAssetSymbol"`
-	NetworkId *string `json:"networkId"`
-	Tags *[]NetworkTag `json:"tags"`
+	AddressExplorerUrl *string `json:"addressExplorerUrl,omitempty"`
+	Confirmations *string `json:"confirmations,omitempty"`
+	ExplorerUrl *string `json:"explorerUrl,omitempty"`
+	IsTestnet *bool `json:"isTestnet,omitempty"`
+	Name *string `json:"name,omitempty"`
+	NativeAssetId *string `json:"nativeAssetId,omitempty"`
+	NativeAssetSymbol *string `json:"nativeAssetSymbol,omitempty"`
+	NetworkId *string `json:"networkId,omitempty"`
+	Tags *[]NetworkTag `json:"tags,omitempty"`
 }

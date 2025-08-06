@@ -1,17 +1,17 @@
 package types
 
 type SigningRequest struct {
-	AccountId *string `json:"accountId"`
-	BlockchainNonce *string `json:"blockchainNonce"`
-	MessagesForSigning *MessagesForSigning `json:"messagesForSigning"`
-	NetworkId *string `json:"networkId"`
-	RequestParameters *map[string]interface{} `json:"requestParameters"`
-	ShouldBeBroadcasted *bool `json:"shouldBeBroadcasted"`
-	Signed *Signed `json:"signed"`
-	SigningData *BlockchainSigningRequest `json:"signingData"`
-	SigningRequestId *string `json:"signingRequestId"`
-	Status *SigningRequestStatus `json:"status"`
-	TransactionId *string `json:"transactionId"`
-	TransactionType *TransactionType `json:"transactionType"`
-	WorkspaceId *string `json:"workspaceId"`
+	AccountId *string `json:"accountId,omitempty"`
+	BlockchainNonce *string `json:"blockchainNonce,omitempty"`
+	MessagesForSigning *MessagesForSigning `json:"messagesForSigning,omitempty"`
+	NetworkId *string `json:"networkId,omitempty"`
+	RequestParameters *map[string]interface{} `json:"requestParameters,omitempty"`
+	ShouldBeBroadcasted *bool `json:"shouldBeBroadcasted,omitempty"`
+	Signed *Signed `json:"signed,omitempty"`
+	SigningData *BlockchainSigningRequest `json:"signingData,omitempty"`
+	SigningRequestId *string `json:"signingRequestId,omitempty"`
+	Status *SigningRequestStatus `json:"status,omitempty"`
+	TransactionId *string `json:"transactionId,omitempty"`
+	TransactionType *TransactionType `json:"transactionType,omitempty"`
+	WorkspaceId *string `json:"workspaceId,omitempty"`
 }

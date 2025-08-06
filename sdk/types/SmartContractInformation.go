@@ -1,5 +1,5 @@
 package types
 
 type SmartContractInformation struct {
-	ContractAddress *string `json:"contractAddress"`
+	ContractAddress *string `json:"contractAddress,omitempty"`
 }

@@ -1,5 +1,5 @@
 package types
 
 type LimitAppliesTo struct {
-	UserIds *[]string `json:"userIds"`
+	UserIds *[]string `json:"userIds,omitempty"`
 }

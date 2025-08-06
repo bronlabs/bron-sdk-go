@@ -1,9 +1,9 @@
 package types
 
 type LimitDestinations struct {
-	AccountIds *[]string `json:"accountIds"`
-	AddressBookRecordIds *[]string `json:"addressBookRecordIds"`
-	ToAccounts *bool `json:"toAccounts"`
-	ToAddressBook *bool `json:"toAddressBook"`
-	ToExternalAddresses *bool `json:"toExternalAddresses"`
+	AccountIds *[]string `json:"accountIds,omitempty"`
+	AddressBookRecordIds *[]string `json:"addressBookRecordIds,omitempty"`
+	ToAccounts *bool `json:"toAccounts,omitempty"`
+	ToAddressBook *bool `json:"toAddressBook,omitempty"`
+	ToExternalAddresses *bool `json:"toExternalAddresses,omitempty"`
 }

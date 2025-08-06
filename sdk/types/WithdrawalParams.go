@@ -2,14 +2,14 @@ package types
 
 type WithdrawalParams struct {
 	Amount string `json:"amount"`
-	AssetId *string `json:"assetId"`
-	FeeLevel *FeeLevel `json:"feeLevel"`
-	IncludeFee *bool `json:"includeFee"`
-	Memo *string `json:"memo"`
-	NetworkFees *RequestedNetworkFees `json:"networkFees"`
-	NetworkId *string `json:"networkId"`
-	Symbol *string `json:"symbol"`
-	ToAccountId *string `json:"toAccountId"`
-	ToAddress *string `json:"toAddress"`
-	ToAddressBookRecordId *string `json:"toAddressBookRecordId"`
+	AssetId *string `json:"assetId,omitempty"`
+	FeeLevel *FeeLevel `json:"feeLevel,omitempty"`
+	IncludeFee *bool `json:"includeFee,omitempty"`
+	Memo *string `json:"memo,omitempty"`
+	NetworkFees *RequestedNetworkFees `json:"networkFees,omitempty"`
+	NetworkId *string `json:"networkId,omitempty"`
+	Symbol *string `json:"symbol,omitempty"`
+	ToAccountId *string `json:"toAccountId,omitempty"`
+	ToAddress *string `json:"toAddress,omitempty"`
+	ToAddressBookRecordId *string `json:"toAddressBookRecordId,omitempty"`
 }
