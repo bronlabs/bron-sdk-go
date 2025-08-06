@@ -398,6 +398,12 @@ func (g *Generator) generateAPI() error {
 	}
 
 	fileData := make(map[string]*apiFileData)
+	// Map to collect query parameters per tag
+	queries := make(map[string][]struct {
+		name     string
+		schema   OpenApiSchema
+		required bool
+	})
 
 	// Process all paths and methods in original order
 	for _, pathEntry := range g.spec.Paths {
@@ -411,6 +417,17 @@ func (g *Generator) generateAPI() error {
 			}
 
 			fileName := g.getFileName(op)
+
+			// Collect query parameters
+			for _, p := range op.Parameters {
+				if p.In == "query" && p.Schema != nil {
+					queries[fileName] = append(queries[fileName], struct {
+						name     string
+						schema   OpenApiSchema
+						required bool
+					}{name: p.Name, schema: *p.Schema, required: p.Required != nil && *p.Required})
+				}
+			}
 			if fileData[fileName] == nil {
 				fileData[fileName] = &apiFileData{
 					types:   make(map[string]bool),
@@ -438,6 +455,38 @@ func (g *Generator) generateAPI() error {
 		}
 	}
 
+	// Generate query types
+	for tagName, params := range queries {
+		structName := g.getAPIClassNameFromFileName(tagName) + "Query"
+		var sb strings.Builder
+		sb.WriteString("package types\n\n")
+		sb.WriteString(fmt.Sprintf("type %s struct {\n", structName))
+		fieldNames := make(map[string]bool)
+		for _, p := range params {
+			if fieldNames[p.name] {
+				continue
+			}
+			fieldNames[p.name] = true
+			fieldName := g.toProperPascalCase(p.name)
+			goType := g.resolveType(p.schema)
+			jsonTag := fmt.Sprintf("`json:\"%s", p.name)
+			if !p.required {
+				// optional: pointer & omitempty, except interface{}
+				if goType != "interface{}" {
+					goType = "*" + goType
+				}
+				jsonTag += ",omitempty"
+			}
+			jsonTag += "\"`"
+			sb.WriteString(fmt.Sprintf("\t%s %s %s\n", fieldName, goType, jsonTag))
+		}
+		sb.WriteString("}\n")
+		filename := filepath.Join(g.typesDir, structName+".go")
+		if err := os.WriteFile(filename, []byte(sb.String()), 0644); err != nil {
+			return fmt.Errorf("failed to write query type file %s: %w", filename, err)
+		}
+	}
+
 	return nil
 }
 
@@ -452,6 +501,14 @@ func (g *Generator) generateMethod(op OpenApiOperation, method, route string) st
 
 	// Determine parameters
 	paramType, paramOptional, pathParams := g.processParameters(op)
+	// Collect query parameters
+	var queryParams []struct{ name string }
+	for _, p := range op.Parameters {
+		if p.In == "query" {
+			queryParams = append(queryParams, struct{ name string }{name: p.Name})
+		}
+	}
+
 	returnType := g.getReturnType(op)
 
 	// Generate method signature and body
@@ -474,9 +531,18 @@ func (g *Generator) generateMethod(op OpenApiOperation, method, route string) st
 		}
 	}
 
+	// Add query parameter
+	if len(queryParams) > 0 {
+		if len(pathParams) > 0 {
+			sb.WriteString(", ")
+		}
+		queryTypeName := g.getAPIClassName(op) + "Query"
+		sb.WriteString(fmt.Sprintf("query *types.%s", queryTypeName))
+	}
+
 	// Add body parameter
 	if paramType != "interface{}" {
-		if len(pathParams) > 0 {
+		if len(pathParams) > 0 || len(queryParams) > 0 {
 			sb.WriteString(", ")
 		}
 		sb.WriteString(fmt.Sprintf("body%s types.%s", paramOptional, paramType))
@@ -520,6 +586,9 @@ func (g *Generator) generateMethod(op OpenApiOperation, method, route string) st
 		sb.WriteString("\toptions := http.RequestOptions{\n")
 		sb.WriteString(fmt.Sprintf("\t\tMethod: \"%s\",\n", strings.ToUpper(method)))
 		sb.WriteString("\t\tPath:   path,\n")
+		if len(queryParams) > 0 {
+			sb.WriteString("\t\tQuery:  query,\n")
+		}
 		if paramType != "interface{}" {
 			sb.WriteString("\t\tBody:   body,\n")
 		}
@@ -530,6 +599,9 @@ func (g *Generator) generateMethod(op OpenApiOperation, method, route string) st
 		sb.WriteString("\toptions := http.RequestOptions{\n")
 		sb.WriteString(fmt.Sprintf("\t\t\tMethod: \"%s\",\n", strings.ToUpper(method)))
 		sb.WriteString("\t\tPath:   path,\n")
+		if len(queryParams) > 0 {
+			sb.WriteString("\t\tQuery:  query,\n")
+		}
 		if paramType != "interface{}" {
 			sb.WriteString("\t\tBody:   body,\n")
 		}

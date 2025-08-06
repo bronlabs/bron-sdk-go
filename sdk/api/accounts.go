@@ -19,12 +19,13 @@ func NewAccountsAPI(http *http.Client, workspaceID string) *AccountsAPI {
 	}
 }
 
-func (api *AccountsAPI) GetAccounts() (*types.Accounts, error) {
+func (api *AccountsAPI) GetAccounts(query *types.AccountsQuery) (*types.Accounts, error) {
 	path := fmt.Sprintf("/workspaces/%s/accounts", api.workspaceID)
 	var result types.Accounts
 	options := http.RequestOptions{
 		Method: "GET",
 		Path:   path,
+		Query:  query,
 	}
 	err := api.http.Request(&result, options)
 	return &result, err
