@@ -1,6 +1,6 @@
 package types
 
-type AssetsQuery struct {
+type AssetByIdQuery struct {
 	AssetIds *[]string `json:"assetIds,omitempty"`
 	NetworkIds *[]string `json:"networkIds,omitempty"`
 	SymbolIds *[]string `json:"symbolIds,omitempty"`

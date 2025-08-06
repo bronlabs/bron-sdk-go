@@ -1,5 +1,5 @@
 package types
 
 type LimitAmount struct {
-	Amount *string `json:"amount"`
+	Amount *string `json:"amount,omitempty"`
 }

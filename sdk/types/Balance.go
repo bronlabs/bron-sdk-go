@@ -5,10 +5,10 @@ type Balance struct {
 	AccountType AccountType `json:"accountType"`
 	AssetId string `json:"assetId"`
 	BalanceId string `json:"balanceId"`
-	CreatedAt *string `json:"createdAt"`
-	NetworkId *string `json:"networkId"`
-	Symbol *string `json:"symbol"`
-	TotalBalance *string `json:"totalBalance"`
-	UpdatedAt *string `json:"updatedAt"`
+	CreatedAt *string `json:"createdAt,omitempty"`
+	NetworkId *string `json:"networkId,omitempty"`
+	Symbol *string `json:"symbol,omitempty"`
+	TotalBalance *string `json:"totalBalance,omitempty"`
+	UpdatedAt *string `json:"updatedAt,omitempty"`
 	WorkspaceId string `json:"workspaceId"`
 }

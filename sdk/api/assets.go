@@ -31,7 +31,7 @@ func (api *AssetsAPI) GetAssets(query *types.AssetsQuery) (*types.Assets, error)
 	return &result, err
 }
 
-func (api *AssetsAPI) GetAssetById(assetId string, query *types.AssetsQuery) (*types.Asset, error) {
+func (api *AssetsAPI) GetAssetById(assetId string, query *types.AssetByIdQuery) (*types.Asset, error) {
 	path := fmt.Sprintf("/dictionary/assets/%s", assetId)
 	var result types.Asset
 	options := http.RequestOptions{
@@ -43,7 +43,7 @@ func (api *AssetsAPI) GetAssetById(assetId string, query *types.AssetsQuery) (*t
 	return &result, err
 }
 
-func (api *AssetsAPI) GetNetworks(query *types.AssetsQuery) (*types.Networks, error) {
+func (api *AssetsAPI) GetNetworks(query *types.NetworksQuery) (*types.Networks, error) {
 	path := fmt.Sprintf("/dictionary/networks")
 	var result types.Networks
 	options := http.RequestOptions{
@@ -66,7 +66,7 @@ func (api *AssetsAPI) GetNetworkById(networkId string) (*types.Network, error) {
 	return &result, err
 }
 
-func (api *AssetsAPI) GetPrices(query *types.AssetsQuery) (*types.SymbolMarketPrices, error) {
+func (api *AssetsAPI) GetPrices(query *types.PricesQuery) (*types.SymbolMarketPrices, error) {
 	path := fmt.Sprintf("/dictionary/symbol-market-prices")
 	var result types.SymbolMarketPrices
 	options := http.RequestOptions{
@@ -78,7 +78,7 @@ func (api *AssetsAPI) GetPrices(query *types.AssetsQuery) (*types.SymbolMarketPr
 	return &result, err
 }
 
-func (api *AssetsAPI) GetSymbols(query *types.AssetsQuery) (*types.Symbols, error) {
+func (api *AssetsAPI) GetSymbols(query *types.SymbolsQuery) (*types.Symbols, error) {
 	path := fmt.Sprintf("/dictionary/symbols")
 	var result types.Symbols
 	options := http.RequestOptions{
@@ -90,7 +90,7 @@ func (api *AssetsAPI) GetSymbols(query *types.AssetsQuery) (*types.Symbols, erro
 	return &result, err
 }
 
-func (api *AssetsAPI) GetSymbolById(symbolId string, query *types.AssetsQuery) (*types.Symbol, error) {
+func (api *AssetsAPI) GetSymbolById(symbolId string, query *types.SymbolByIdQuery) (*types.Symbol, error) {
 	path := fmt.Sprintf("/dictionary/symbols/%s", symbolId)
 	var result types.Symbol
 	options := http.RequestOptions{

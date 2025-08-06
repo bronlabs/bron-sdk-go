@@ -19,7 +19,7 @@ func NewWorkspacesAPI(http *http.Client, workspaceID string) *WorkspacesAPI {
 	}
 }
 
-func (api *WorkspacesAPI) GetWorkspaceById(query *types.WorkspacesQuery) (*types.Workspace, error) {
+func (api *WorkspacesAPI) GetWorkspaceById(query *types.WorkspaceByIdQuery) (*types.Workspace, error) {
 	path := fmt.Sprintf("/workspaces/%s", api.workspaceID)
 	var result types.Workspace
 	options := http.RequestOptions{
@@ -31,7 +31,7 @@ func (api *WorkspacesAPI) GetWorkspaceById(query *types.WorkspacesQuery) (*types
 	return &result, err
 }
 
-func (api *WorkspacesAPI) GetActivities(query *types.WorkspacesQuery) (*types.Activities, error) {
+func (api *WorkspacesAPI) GetActivities(query *types.ActivitiesQuery) (*types.Activities, error) {
 	path := fmt.Sprintf("/workspaces/%s/activities", api.workspaceID)
 	var result types.Activities
 	options := http.RequestOptions{
@@ -43,7 +43,7 @@ func (api *WorkspacesAPI) GetActivities(query *types.WorkspacesQuery) (*types.Ac
 	return &result, err
 }
 
-func (api *WorkspacesAPI) GetWorkspaceMembers(query *types.WorkspacesQuery) (*types.WorkspaceMembers, error) {
+func (api *WorkspacesAPI) GetWorkspaceMembers(query *types.WorkspaceMembersQuery) (*types.WorkspaceMembers, error) {
 	path := fmt.Sprintf("/workspaces/%s/members", api.workspaceID)
 	var result types.WorkspaceMembers
 	options := http.RequestOptions{

@@ -334,7 +334,7 @@ func (g *Generator) generateStruct(name string, schema OpenApiSchema) string {
 				Items: itemsSchema,
 			}
 			goType := g.resolveType(propSchema)
-			jsonTag := fmt.Sprintf("`json:\"%s\"`", propNameStr)
+			jsonTag := fmt.Sprintf("`json:\"%s", propNameStr)
 
 			// Check if field is required
 			isRequired := false
@@ -346,9 +346,13 @@ func (g *Generator) generateStruct(name string, schema OpenApiSchema) string {
 			}
 
 			// Make field optional if not required
-			if !isRequired && goType != "interface{}" {
-				goType = "*" + goType
+			if !isRequired {
+				if goType != "interface{}" {
+					goType = "*" + goType
+				}
+				jsonTag += ",omitempty"
 			}
+			jsonTag += "\"`"
 
 			sb.WriteString(fmt.Sprintf("\t%s %s %s\n", g.toProperPascalCase(propName), goType, jsonTag))
 		}
@@ -403,7 +407,7 @@ func (g *Generator) generateAPI() error {
 		name     string
 		schema   OpenApiSchema
 		required bool
-	})
+	}) // key = query struct name
 
 	// Process all paths and methods in original order
 	for _, pathEntry := range g.spec.Paths {
@@ -418,10 +422,17 @@ func (g *Generator) generateAPI() error {
 
 			fileName := g.getFileName(op)
 
-			// Collect query parameters
+			funcNameCamel := g.toCamelCase(op.Summary)
+			baseName := g.toProperPascalCase(funcNameCamel)
+			if strings.HasPrefix(baseName, "Get") {
+				baseName = baseName[3:]
+			}
+			structName := baseName + "Query"
+
+			// Collect query parameters for this handle
 			for _, p := range op.Parameters {
 				if p.In == "query" && p.Schema != nil {
-					queries[fileName] = append(queries[fileName], struct {
+					queries[structName] = append(queries[structName], struct {
 						name     string
 						schema   OpenApiSchema
 						required bool
@@ -456,8 +467,7 @@ func (g *Generator) generateAPI() error {
 	}
 
 	// Generate query types
-	for tagName, params := range queries {
-		structName := g.getAPIClassNameFromFileName(tagName) + "Query"
+	for structName, params := range queries {
 		var sb strings.Builder
 		sb.WriteString("package types\n\n")
 		sb.WriteString(fmt.Sprintf("type %s struct {\n", structName))
@@ -536,7 +546,11 @@ func (g *Generator) generateMethod(op OpenApiOperation, method, route string) st
 		if len(pathParams) > 0 {
 			sb.WriteString(", ")
 		}
-		queryTypeName := g.getAPIClassName(op) + "Query"
+		baseName := g.toProperPascalCase(funcName)
+		if strings.HasPrefix(baseName, "Get") {
+			baseName = baseName[3:]
+		}
+		queryTypeName := baseName + "Query"
 		sb.WriteString(fmt.Sprintf("query *types.%s", queryTypeName))
 	}
 

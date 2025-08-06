@@ -1,7 +1,7 @@
 package types
 
 type MessagesForSigning struct {
-	Messages *[]MessageForSigning `json:"messages"`
-	PublicKey *string `json:"publicKey"`
-	UseBackupPrimitive *bool `json:"useBackupPrimitive"`
+	Messages *[]MessageForSigning `json:"messages,omitempty"`
+	PublicKey *string `json:"publicKey,omitempty"`
+	UseBackupPrimitive *bool `json:"useBackupPrimitive,omitempty"`
 }

@@ -1,12 +1,12 @@
 package types
 
 type Activity struct {
-	AccountId *string `json:"accountId"`
+	AccountId *string `json:"accountId,omitempty"`
 	ActivityId string `json:"activityId"`
 	ActivityType ActivityType `json:"activityType"`
 	CreatedAt string `json:"createdAt"`
-	Description *string `json:"description"`
+	Description *string `json:"description,omitempty"`
 	Title string `json:"title"`
-	UserId *string `json:"userId"`
-	WorkspaceId *string `json:"workspaceId"`
+	UserId *string `json:"userId,omitempty"`
+	WorkspaceId *string `json:"workspaceId,omitempty"`
 }

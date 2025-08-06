@@ -1,5 +1,5 @@
 package types
 
 type Assets struct {
-	Assets *[]Asset `json:"assets"`
+	Assets *[]Asset `json:"assets,omitempty"`
 }

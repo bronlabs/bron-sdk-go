@@ -1,5 +1,5 @@
 package types
 
 type Networks struct {
-	Networks *[]Network `json:"networks"`
+	Networks *[]Network `json:"networks,omitempty"`
 }
