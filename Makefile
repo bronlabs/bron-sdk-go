@@ -1,4 +1,4 @@
-.PHONY:
+.PHONY: $(MAKECMDGOALS)
 
 test:
 	go test ./...
@@ -8,5 +8,3 @@ generate-keys:
 
 generate:
 	go run cmd/generator/main.go bron-open-api-public.json sdk/types sdk/api
-
-.PHONY: generate
