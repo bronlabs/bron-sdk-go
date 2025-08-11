@@ -1,4 +1,4 @@
-.PHONY:
+.PHONY: $(MAKECMDGOALS)
 
 test:
 	go test ./...
@@ -8,8 +8,6 @@ generate-keys:
 
 generate:
 	go run cmd/generator/main.go bron-open-api-public.json sdk/types sdk/api
-
-.PHONY: generate
 
 build:
 	go build ./...
@@ -23,5 +21,3 @@ publish:
 	git push origin master
 	git tag v$(shell grep 'SDK_VERSION =' sdk/version/version.go | cut -d'"' -f2)
 	git push origin v$(shell grep 'SDK_VERSION =' sdk/version/version.go | cut -d'"' -f2)
-
-.PHONY: publish

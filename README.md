@@ -17,28 +17,7 @@ Go SDK for the Bron API. This is a complete port of the TypeScript SDK to Go, ma
 go get github.com/bronlabs/bron-sdk-go
 ```
 
-## Quick Start
-
-### 1. Generate API Keys
-
-```bash
-go run cmd/keygen/main.go
-```
-
-This will output:
-
-- **Public JWK** (send to Bron)
-- **Private JWK** (keep safe)
-
-To validate a JWK:
-
-```bash
-go run cmd/keygen/main.go --validate '{"kty":"EC",...}'
-```
-
-### 2. Basic Usage
-
-**Send any token:**
+### Example
 
 ```go
 package main
@@ -46,7 +25,8 @@ package main
 import (
 	"log"
 	"os"
-	bron "github.com/bronlabs/bron-sdk-go/sdk"
+  
+	"github.com/bronlabs/bron-sdk-go/sdk"
 	"github.com/bronlabs/bron-sdk-go/sdk/types"
 	"github.com/google/uuid"
 	"github.com/joho/godotenv"
@@ -55,7 +35,7 @@ import (
 func main() {
 	godotenv.Load()
 
-	client := bron.NewBronClient(bron.BronClientConfig{
+	client := sdk.NewBronClient(bron.BronClientConfig{
 		APIKey:      os.Getenv("BRON_API_KEY"),
 		WorkspaceID: os.Getenv("BRON_WORKSPACE_ID"),
 	})
@@ -93,32 +73,49 @@ func main() {
 // Get all accounts
 accounts, err := client.Accounts.GetAccounts()
 if err != nil {
-log.Fatal(err)
+  log.Fatal(err)
 }
 
 // Get balances
 balances, err := client.Balances.GetBalances()
 if err != nil {
-log.Fatal(err)
+  log.Fatal(err)
 }
 
-// Get specific account balance
-balance, err := client.GetAccountBalance("account_id")
-if err != nil {
-log.Fatal(err)
+	// Get balances for first account
+	if len(accounts.Accounts) > 0 {
+		account := accounts.Accounts[0]
+		accountIds := []string{account.AccountId}
+		
+		balances, err := client.Balances.GetBalances(&types.BalancesQuery{
+			AccountIds: &accountIds,
+		})
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		for _, balance := range balances.Balances {
+			log.Printf("Balance %s (%s): %s", balance.AssetId, balance.Symbol, balance.TotalBalance)
+		}
+
+		// Create transaction
+		tx, err := client.Transactions.CreateTransaction(types.CreateTransaction{
+			AccountId:       account.AccountId,
+			ExternalId:      uuid.New().String(),
+			TransactionType: "withdrawal",
+			Params: map[string]interface{}{
+				"amount":    "73.042",
+				"assetId":   "2",
+				"toAddress": "0x428CdE5631142916F295d7bb2DA9d1b5f49F0eF9",
+			},
+		})
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		log.Printf("Created transaction '%s': send %s", tx.TransactionId, tx.Params["amount"])
+	}
 }
-```
-
-### Building
-
-```bash
-make build
-```
-
-### Key Generation
-
-```bash
-make generate-keys
 ```
 
 ## Configuration
@@ -140,8 +137,8 @@ All API methods return errors that should be checked:
 ```go
 accounts, err := client.Accounts().GetAccounts(nil)
 if err != nil {
-log.Printf("API error: %v", err)
-return
+  log.Printf("API error: %v", err)
+  return
 }
 ```
 
