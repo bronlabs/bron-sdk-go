@@ -30,15 +30,14 @@ This will output:
 - **Public JWK** (send to Bron)
 - **Private JWK** (keep safe)
 
-To validate a JWK:
 
-```bash
-go run cmd/keygen/main.go --validate '{"kty":"EC",...}'
-```
 
 ### 2. Basic Usage
 
-**Send any token:**
+```sh
+export BRON_API_KEY='{"kty":"EC","x":"VqW0Rzw4At***ADF2iFCzxc","y":"9AylQ7HHI0vRT0C***PqWuf2yT8","crv":"P-256","d":"DCQ0jrmYw8***9i64igNKuP0","kid":"cmdos3lj50000sayo6pl45zly"}'
+export BRON_WORKSPACE_ID='htotobpkg7xqjfxenjid3n1o'
+```
 
 ```go
 package main
@@ -60,52 +59,52 @@ func main() {
 		WorkspaceID: os.Getenv("BRON_WORKSPACE_ID"),
 	})
 
-	// Just change these values:
-	accountID := "your_account_id" // Your account ID
-	toAddress := "0x..."           // Where to send
-	amount := "0.001"              // How much to send
-	symbol := "ETH"                // What to send (ETH, BRON, etc.)
-	networkId := "testETH"         // Network (ETH=mainnet, testETH=testnet)
-
-	err := client.Transactions.CreateTransaction(types.CreateTransaction{
-		ExternalId:      uuid.New().String(),
-		AccountId:       accountID,
-		TransactionType: "withdrawal",
-		Params: map[string]interface{}{
-			"amount":    amount,
-			"networkId": networkId,
-			"symbol":    symbol,
-			"toAddress": toAddress,
-		},
-	})
-
+	// Get workspace
+	workspace, err := client.Workspaces.GetWorkspaceById()
 	if err != nil {
-		log.Fatal("Error:", err)
+		log.Fatal(err)
+	}
+	log.Printf("Workspace: %s", workspace.Name)
+
+	// Get accounts
+	accounts, err := client.Accounts.GetAccounts(nil)
+	if err != nil {
+		log.Fatal(err)
 	}
 
-	log.Println("✅ Transaction sent!")
-}
-```
+	// Get balances for first account
+	if len(accounts.Accounts) > 0 {
+		account := accounts.Accounts[0]
+		accountIds := []string{account.AccountId}
+		
+		balances, err := client.Balances.GetBalances(&types.BalancesQuery{
+			AccountIds: &accountIds,
+		})
+		if err != nil {
+			log.Fatal(err)
+		}
 
-**Get Accounts & Balances:**
+		for _, balance := range balances.Balances {
+			log.Printf("Balance %s (%s): %s", balance.AssetId, balance.Symbol, balance.TotalBalance)
+		}
 
-```go
-// Get all accounts
-accounts, err := client.Accounts.GetAccounts()
-if err != nil {
-log.Fatal(err)
-}
+		// Create transaction
+		tx, err := client.Transactions.CreateTransaction(types.CreateTransaction{
+			AccountId:       account.AccountId,
+			ExternalId:      uuid.New().String(),
+			TransactionType: "withdrawal",
+			Params: map[string]interface{}{
+				"amount":    "73.042",
+				"assetId":   "2",
+				"toAddress": "0x428CdE5631142916F295d7bb2DA9d1b5f49F0eF9",
+			},
+		})
+		if err != nil {
+			log.Fatal(err)
+		}
 
-// Get balances
-balances, err := client.Balances.GetBalances()
-if err != nil {
-log.Fatal(err)
-}
-
-// Get specific account balance
-balance, err := client.GetAccountBalance("account_id")
-if err != nil {
-log.Fatal(err)
+		log.Printf("Created transaction '%s': send %s", tx.TransactionId, tx.Params["amount"])
+	}
 }
 ```
 
