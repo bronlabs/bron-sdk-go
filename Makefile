@@ -1,5 +1,7 @@
 .PHONY: $(MAKECMDGOALS)
 
+VERSION ?= $(shell git describe --tags --abbrev=0 | sed 's/v//' | awk -F. '{$$NF = $$NF + 1;} 1' | sed 's/ /./g')
+
 test:
 	go test ./...
 
@@ -13,13 +15,10 @@ build:
 	go build ./...
 
 publish:
-	@read -p "Enter version (e.g., 0.1.18): " version; \
-	echo "package version" > sdk/version/version.go; \
-	echo "" >> sdk/version/version.go; \
-	echo "const SDK_VERSION = \"$$version\"" >> sdk/version/version.go; \
-	go build ./...; \
-	git add sdk/version/version.go; \
-	git commit -am "Release v$$version"; \
-	git push origin master; \
-	git tag v$$version; \
-	git push origin v$$version
+	echo "package http\n\nconst SDK_VERSION = \"${VERSION}\"" > sdk/http/version.go;
+	@make build
+	git add sdk/http/version.go;
+	git commit -am "Release v${VERSION}";
+	git push origin master;
+	git tag v${VERSION};
+	git push origin v${VERSION};

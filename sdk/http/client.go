@@ -11,7 +11,6 @@ import (
 	"time"
 
 	"github.com/bronlabs/bron-sdk-go/sdk/auth"
-	"github.com/bronlabs/bron-sdk-go/sdk/version"
 )
 
 type RequestOptions struct {
@@ -109,7 +108,7 @@ func (c *Client) Request(result interface{}, options RequestOptions) error {
 	// Add headers
 	req.Header.Set("Content-Type", "application/json")
 	req.Header.Set("Authorization", "ApiKey "+token)
-	req.Header.Set("User-Agent", "Bron SDK Go/"+version.SDK_VERSION)
+	req.Header.Set("User-Agent", "Bron SDK Go/"+SDK_VERSION)
 
 	resp, err := c.httpClient.Do(req)
 	if err != nil {
