@@ -102,10 +102,27 @@ if err != nil {
 log.Fatal(err)
 }
 
-// Get specific account balance
-balance, err := client.GetAccountBalance("account_id")
-if err != nil {
-log.Fatal(err)
+		for _, balance := range balances.Balances {
+			log.Printf("Balance %s (%s): %s", balance.AssetId, balance.Symbol, balance.TotalBalance)
+		}
+
+		// Create transaction
+		tx, err := client.Transactions.CreateTransaction(types.CreateTransaction{
+			AccountId:       account.AccountId,
+			ExternalId:      uuid.New().String(),
+			TransactionType: "withdrawal",
+			Params: map[string]interface{}{
+				"amount":    "73.042",
+				"assetId":   "2",
+				"toAddress": "0x428CdE5631142916F295d7bb2DA9d1b5f49F0eF9",
+			},
+		})
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		log.Printf("Created transaction '%s': send %s", tx.TransactionId, tx.Params["amount"])
+	}
 }
 ```
 
