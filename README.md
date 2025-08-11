@@ -96,8 +96,6 @@ func main() {
 			Params: map[string]interface{}{
 				"amount":    "73.042",
 				"assetId":   "2",
-				"symbol":    "ETH",
-				"networkId": "ETH",
 				"toAddress": "0x428CdE5631142916F295d7bb2DA9d1b5f49F0eF9",
 			},
 		})
