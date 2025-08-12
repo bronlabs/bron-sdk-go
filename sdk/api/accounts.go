@@ -19,26 +19,30 @@ func NewAccountsAPI(http *http.Client, workspaceID string) *AccountsAPI {
 	}
 }
 
-func (api *AccountsAPI) GetAccounts(query *types.AccountsQuery) (interface{}, error) {
+func (api *AccountsAPI) GetAccounts(query ...*types.AccountsQuery) (*types.Accounts, error) {
 	path := fmt.Sprintf("/workspaces/%s/accounts", api.workspaceID)
-	var result interface{}
+	var result types.Accounts
+	var queryParam *types.AccountsQuery
+	if len(query) > 0 && query[0] != nil {
+		queryParam = query[0]
+	}
 	options := http.RequestOptions{
 		Method: "GET",
 		Path:   path,
-		Query:  query,
+		Query:  queryParam,
 	}
 	err := api.http.Request(&result, options)
-	return result, err
+	return &result, err
 }
 
-func (api *AccountsAPI) GetAccountById(accountId string) (interface{}, error) {
+func (api *AccountsAPI) GetAccountById(accountId string) (*types.Account, error) {
 	path := fmt.Sprintf("/workspaces/%s/accounts/%s", api.workspaceID, accountId)
-	var result interface{}
+	var result types.Account
 	options := http.RequestOptions{
 		Method: "GET",
 		Path:   path,
 	}
 	err := api.http.Request(&result, options)
-	return result, err
+	return &result, err
 }
 

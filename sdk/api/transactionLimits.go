@@ -19,26 +19,30 @@ func NewTransactionLimitsAPI(http *http.Client, workspaceID string) *Transaction
 	}
 }
 
-func (api *TransactionLimitsAPI) GetTransactionLimits(query *types.TransactionLimitsQuery) (interface{}, error) {
+func (api *TransactionLimitsAPI) GetTransactionLimits(query ...*types.TransactionLimitsQuery) (*types.TransactionLimits, error) {
 	path := fmt.Sprintf("/workspaces/%s/transaction-limits", api.workspaceID)
-	var result interface{}
+	var result types.TransactionLimits
+	var queryParam *types.TransactionLimitsQuery
+	if len(query) > 0 && query[0] != nil {
+		queryParam = query[0]
+	}
 	options := http.RequestOptions{
 		Method: "GET",
 		Path:   path,
-		Query:  query,
+		Query:  queryParam,
 	}
 	err := api.http.Request(&result, options)
-	return result, err
+	return &result, err
 }
 
-func (api *TransactionLimitsAPI) GetTransactionLimitById(limitId string) (interface{}, error) {
+func (api *TransactionLimitsAPI) GetTransactionLimitById(limitId string) (*types.TransactionLimit, error) {
 	path := fmt.Sprintf("/workspaces/%s/transaction-limits/%s", api.workspaceID, limitId)
-	var result interface{}
+	var result types.TransactionLimit
 	options := http.RequestOptions{
 		Method: "GET",
 		Path:   path,
 	}
 	err := api.http.Request(&result, options)
-	return result, err
+	return &result, err
 }
 

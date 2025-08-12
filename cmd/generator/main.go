@@ -551,7 +551,7 @@ func (g *Generator) generateMethod(op OpenApiOperation, method, route string) st
 			baseName = baseName[3:]
 		}
 		queryTypeName := baseName + "Query"
-		sb.WriteString(fmt.Sprintf("query *types.%s", queryTypeName))
+		sb.WriteString(fmt.Sprintf("query ...*types.%s", queryTypeName))
 	}
 
 	// Add body parameter
@@ -564,8 +564,13 @@ func (g *Generator) generateMethod(op OpenApiOperation, method, route string) st
 
 	sb.WriteString(")")
 
-	// Return type - always return raw response like JS SDK
-	sb.WriteString(" (interface{}, error)")
+	// Return type
+	responseType := g.getReturnType(op)
+	if responseType != "" {
+		sb.WriteString(fmt.Sprintf(" (*types.%s, error)", responseType))
+	} else {
+		sb.WriteString(" error")
+	}
 
 	// Method body
 	sb.WriteString(" {\n")
@@ -591,20 +596,35 @@ func (g *Generator) generateMethod(op OpenApiOperation, method, route string) st
 	}
 	sb.WriteString(")\n")
 
-	// Always return raw response like JS SDK
-	sb.WriteString("\tvar result interface{}\n")
+	// Return proper types
+	if responseType != "" {
+		sb.WriteString(fmt.Sprintf("\tvar result types.%s\n", responseType))
+	} else {
+		sb.WriteString("\tvar result interface{}\n")
+	}
+	if len(queryParams) > 0 {
+		sb.WriteString("\tvar queryParam *types." + g.getQueryTypeName(funcName) + "\n")
+		sb.WriteString("\tif len(query) > 0 && query[0] != nil {\n")
+		sb.WriteString("\t\tqueryParam = query[0]\n")
+		sb.WriteString("\t}\n")
+	}
 	sb.WriteString("\toptions := http.RequestOptions{\n")
 	sb.WriteString(fmt.Sprintf("\t\tMethod: \"%s\",\n", strings.ToUpper(method)))
 	sb.WriteString("\t\tPath:   path,\n")
 	if len(queryParams) > 0 {
-		sb.WriteString("\t\tQuery:  query,\n")
+		sb.WriteString("\t\tQuery:  queryParam,\n")
 	}
 	if paramType != "interface{}" {
 		sb.WriteString("\t\tBody:   body,\n")
 	}
 	sb.WriteString("\t}\n")
-	sb.WriteString("\terr := api.http.Request(&result, options)\n")
-	sb.WriteString("\treturn result, err\n")
+	if responseType != "" {
+		sb.WriteString("\terr := api.http.Request(&result, options)\n")
+		sb.WriteString("\treturn &result, err\n")
+	} else {
+		sb.WriteString("\terr := api.http.Request(&result, options)\n")
+		sb.WriteString("\treturn err\n")
+	}
 
 	sb.WriteString("}")
 	return sb.String()
@@ -681,10 +701,13 @@ func (g *Generator) processParameters(op OpenApiOperation) (paramType, paramOpti
 
 func (g *Generator) getReturnType(op OpenApiOperation) string {
 	if op.Responses != nil {
-		if response, ok := op.Responses["200"]; ok {
-			if content, ok := response.Content["application/json"]; ok && content.Schema != nil {
-				if content.Schema.Ref != "" {
-					return g.extractRefName(content.Schema.Ref)
+		// Check for both 200 and 201 status codes
+		for _, statusCode := range []string{"200", "201"} {
+			if response, ok := op.Responses[statusCode]; ok {
+				if content, ok := response.Content["application/json"]; ok && content.Schema != nil {
+					if content.Schema.Ref != "" {
+						return g.extractRefName(content.Schema.Ref)
+					}
 				}
 			}
 		}
@@ -769,4 +792,12 @@ func (g *Generator) toProperPascalCase(str string) string {
 	}
 
 	return str
+}
+
+func (g *Generator) getQueryTypeName(funcName string) string {
+	baseName := g.toProperPascalCase(funcName)
+	if strings.HasPrefix(baseName, "Get") {
+		baseName = baseName[3:]
+	}
+	return baseName + "Query"
 }
