@@ -19,49 +19,53 @@ func NewAddressBookAPI(http *http.Client, workspaceID string) *AddressBookAPI {
 	}
 }
 
-func (api *AddressBookAPI) GetAddressBookRecords(query *types.AddressBookRecordsQuery) (interface{}, error) {
+func (api *AddressBookAPI) GetAddressBookRecords(query ...*types.AddressBookRecordsQuery) (*types.AddressBookRecords, error) {
 	path := fmt.Sprintf("/workspaces/%s/address-book-records", api.workspaceID)
-	var result interface{}
+	var result types.AddressBookRecords
+	var queryParam *types.AddressBookRecordsQuery
+	if len(query) > 0 && query[0] != nil {
+		queryParam = query[0]
+	}
 	options := http.RequestOptions{
 		Method: "GET",
 		Path:   path,
-		Query:  query,
+		Query:  queryParam,
 	}
 	err := api.http.Request(&result, options)
-	return result, err
+	return &result, err
 }
 
-func (api *AddressBookAPI) CreateAddressBookRecord(body types.CreateAddressBookRecord) (interface{}, error) {
+func (api *AddressBookAPI) CreateAddressBookRecord(body types.CreateAddressBookRecord) (*types.AddressBookRecord, error) {
 	path := fmt.Sprintf("/workspaces/%s/address-book-records", api.workspaceID)
-	var result interface{}
+	var result types.AddressBookRecord
 	options := http.RequestOptions{
 		Method: "POST",
 		Path:   path,
 		Body:   body,
 	}
 	err := api.http.Request(&result, options)
-	return result, err
+	return &result, err
 }
 
-func (api *AddressBookAPI) DeactivateAddressBookRecord(recordId string) (interface{}, error) {
+func (api *AddressBookAPI) DeactivateAddressBookRecord(recordId string) (*types.Unit, error) {
 	path := fmt.Sprintf("/workspaces/%s/address-book-records/%s", api.workspaceID, recordId)
-	var result interface{}
+	var result types.Unit
 	options := http.RequestOptions{
 		Method: "DELETE",
 		Path:   path,
 	}
 	err := api.http.Request(&result, options)
-	return result, err
+	return &result, err
 }
 
-func (api *AddressBookAPI) GetAddressBookRecordById(recordId string) (interface{}, error) {
+func (api *AddressBookAPI) GetAddressBookRecordById(recordId string) (*types.AddressBookRecord, error) {
 	path := fmt.Sprintf("/workspaces/%s/address-book-records/%s", api.workspaceID, recordId)
-	var result interface{}
+	var result types.AddressBookRecord
 	options := http.RequestOptions{
 		Method: "GET",
 		Path:   path,
 	}
 	err := api.http.Request(&result, options)
-	return result, err
+	return &result, err
 }
 

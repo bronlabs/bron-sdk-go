@@ -6,7 +6,6 @@ import (
 	"testing"
 
 	sdkhttp "github.com/bronlabs/bron-sdk-go/sdk/http"
-	"github.com/bronlabs/bron-sdk-go/sdk/version"
 )
 
 func TestHttpClient(t *testing.T) {
@@ -20,7 +19,7 @@ func TestHttpClientUserAgent(t *testing.T) {
 	// Create a test server to capture headers
 	server := httptest.NewServer(stdhttp.HandlerFunc(func(w stdhttp.ResponseWriter, r *stdhttp.Request) {
 		userAgent := r.Header.Get("User-Agent")
-		expectedUserAgent := "Bron SDK Go/" + version.SDK_VERSION
+		expectedUserAgent := "Bron SDK Go/" + sdkhttp.SDK_VERSION
 
 		if userAgent != expectedUserAgent {
 			t.Errorf("Expected User-Agent: %s, got: %s", expectedUserAgent, userAgent)
