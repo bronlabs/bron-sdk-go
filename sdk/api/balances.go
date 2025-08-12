@@ -19,26 +19,26 @@ func NewBalancesAPI(http *http.Client, workspaceID string) *BalancesAPI {
 	}
 }
 
-func (api *BalancesAPI) GetBalances(query *types.BalancesQuery) (*types.Balances, error) {
+func (api *BalancesAPI) GetBalances(query *types.BalancesQuery) (interface{}, error) {
 	path := fmt.Sprintf("/workspaces/%s/balances", api.workspaceID)
-	var result types.Balances
+	var result interface{}
 	options := http.RequestOptions{
 		Method: "GET",
 		Path:   path,
 		Query:  query,
 	}
 	err := api.http.Request(&result, options)
-	return &result, err
+	return result, err
 }
 
-func (api *BalancesAPI) GetBalanceById(balanceId string) (*types.Balance, error) {
+func (api *BalancesAPI) GetBalanceById(balanceId string) (interface{}, error) {
 	path := fmt.Sprintf("/workspaces/%s/balances/%s", api.workspaceID, balanceId)
-	var result types.Balance
+	var result interface{}
 	options := http.RequestOptions{
 		Method: "GET",
 		Path:   path,
 	}
 	err := api.http.Request(&result, options)
-	return &result, err
+	return result, err
 }
 

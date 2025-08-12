@@ -19,26 +19,26 @@ func NewAccountsAPI(http *http.Client, workspaceID string) *AccountsAPI {
 	}
 }
 
-func (api *AccountsAPI) GetAccounts(query *types.AccountsQuery) (*types.Accounts, error) {
+func (api *AccountsAPI) GetAccounts(query *types.AccountsQuery) (interface{}, error) {
 	path := fmt.Sprintf("/workspaces/%s/accounts", api.workspaceID)
-	var result types.Accounts
+	var result interface{}
 	options := http.RequestOptions{
 		Method: "GET",
 		Path:   path,
 		Query:  query,
 	}
 	err := api.http.Request(&result, options)
-	return &result, err
+	return result, err
 }
 
-func (api *AccountsAPI) GetAccountById(accountId string) (*types.Account, error) {
+func (api *AccountsAPI) GetAccountById(accountId string) (interface{}, error) {
 	path := fmt.Sprintf("/workspaces/%s/accounts/%s", api.workspaceID, accountId)
-	var result types.Account
+	var result interface{}
 	options := http.RequestOptions{
 		Method: "GET",
 		Path:   path,
 	}
 	err := api.http.Request(&result, options)
-	return &result, err
+	return result, err
 }
 

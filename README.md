@@ -47,7 +47,7 @@ func main() {
 	symbol := "ETH"                // What to send (ETH, BRON, etc.)
 	networkId := "testETH"         // Network (ETH=mainnet, testETH=testnet)
 
-	err := client.Transactions.CreateTransaction(types.CreateTransaction{
+	result, err := client.Transactions.CreateTransaction(types.CreateTransaction{
 		ExternalId:      uuid.New().String(),
 		AccountId:       accountID,
 		TransactionType: "withdrawal",
@@ -64,6 +64,7 @@ func main() {
 	}
 
 	log.Println("✅ Transaction sent!")
+	log.Printf("Response: %+v", result)
 }
 ```
 
@@ -71,13 +72,13 @@ func main() {
 
 ```go
 // Get all accounts
-accounts, err := client.Accounts.GetAccounts()
+accounts, err := client.Accounts.GetAccounts(nil)
 if err != nil {
   log.Fatal(err)
 }
 
 // Get balances
-balances, err := client.Balances.GetBalances()
+balances, err := client.Balances.GetBalances(nil)
 if err != nil {
   log.Fatal(err)
 }
@@ -99,7 +100,7 @@ if err != nil {
 		}
 
 		// Create transaction
-		tx, err := client.Transactions.CreateTransaction(types.CreateTransaction{
+		result, err := client.Transactions.CreateTransaction(types.CreateTransaction{
 			AccountId:       account.AccountId,
 			ExternalId:      uuid.New().String(),
 			TransactionType: "withdrawal",
@@ -113,7 +114,7 @@ if err != nil {
 			log.Fatal(err)
 		}
 
-		log.Printf("Created transaction '%s': send %s", tx.TransactionId, tx.Params["amount"])
+		log.Printf("Created transaction response: %+v", result)
 	}
 }
 ```
@@ -132,14 +133,15 @@ The SDK automatically handles JWT generation for API requests. You only need to 
 
 ## Error Handling
 
-All API methods return errors that should be checked:
+All API methods return `(interface{}, error)` where the first value is the raw API response and the second is any error. Errors should always be checked:
 
 ```go
-accounts, err := client.Accounts().GetAccounts(nil)
+result, err := client.Accounts.GetAccounts(nil)
 if err != nil {
   log.Printf("API error: %v", err)
   return
 }
+log.Printf("Response: %+v", result)
 ```
 
 ## License

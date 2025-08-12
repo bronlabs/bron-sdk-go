@@ -564,12 +564,8 @@ func (g *Generator) generateMethod(op OpenApiOperation, method, route string) st
 
 	sb.WriteString(")")
 
-	// Return type
-	if returnType != "" {
-		sb.WriteString(fmt.Sprintf(" (*types.%s, error)", returnType))
-	} else {
-		sb.WriteString(" error")
-	}
+	// Return type - always return raw response like JS SDK
+	sb.WriteString(" (interface{}, error)")
 
 	// Method body
 	sb.WriteString(" {\n")
@@ -595,33 +591,20 @@ func (g *Generator) generateMethod(op OpenApiOperation, method, route string) st
 	}
 	sb.WriteString(")\n")
 
-	if returnType != "" {
-		sb.WriteString(fmt.Sprintf("\tvar result types.%s\n", returnType))
-		sb.WriteString("\toptions := http.RequestOptions{\n")
-		sb.WriteString(fmt.Sprintf("\t\tMethod: \"%s\",\n", strings.ToUpper(method)))
-		sb.WriteString("\t\tPath:   path,\n")
-		if len(queryParams) > 0 {
-			sb.WriteString("\t\tQuery:  query,\n")
-		}
-		if paramType != "interface{}" {
-			sb.WriteString("\t\tBody:   body,\n")
-		}
-		sb.WriteString("\t}\n")
-		sb.WriteString("\terr := api.http.Request(&result, options)\n")
-		sb.WriteString("\treturn &result, err\n")
-	} else {
-		sb.WriteString("\toptions := http.RequestOptions{\n")
-		sb.WriteString(fmt.Sprintf("\t\t\tMethod: \"%s\",\n", strings.ToUpper(method)))
-		sb.WriteString("\t\tPath:   path,\n")
-		if len(queryParams) > 0 {
-			sb.WriteString("\t\tQuery:  query,\n")
-		}
-		if paramType != "interface{}" {
-			sb.WriteString("\t\tBody:   body,\n")
-		}
-		sb.WriteString("\t}\n")
-		sb.WriteString("\treturn api.http.Request(nil, options)\n")
+	// Always return raw response like JS SDK
+	sb.WriteString("\tvar result interface{}\n")
+	sb.WriteString("\toptions := http.RequestOptions{\n")
+	sb.WriteString(fmt.Sprintf("\t\tMethod: \"%s\",\n", strings.ToUpper(method)))
+	sb.WriteString("\t\tPath:   path,\n")
+	if len(queryParams) > 0 {
+		sb.WriteString("\t\tQuery:  query,\n")
 	}
+	if paramType != "interface{}" {
+		sb.WriteString("\t\tBody:   body,\n")
+	}
+	sb.WriteString("\t}\n")
+	sb.WriteString("\terr := api.http.Request(&result, options)\n")
+	sb.WriteString("\treturn result, err\n")
 
 	sb.WriteString("}")
 	return sb.String()
