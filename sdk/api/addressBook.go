@@ -19,26 +19,32 @@ func NewAddressBookAPI(http *http.Client, workspaceID string) *AddressBookAPI {
 	}
 }
 
-func (api *AddressBookAPI) GetAddressBookRecords(query *types.AddressBookRecordsQuery) (*types.AddressBookRecords, error) {
+func (api *AddressBookAPI) GetAddressBookRecords(query ...*types.AddressBookRecordsQuery) (*types.AddressBookRecords, error) {
 	path := fmt.Sprintf("/workspaces/%s/address-book-records", api.workspaceID)
 	var result types.AddressBookRecords
+	var queryParam *types.AddressBookRecordsQuery
+	if len(query) > 0 && query[0] != nil {
+		queryParam = query[0]
+	}
 	options := http.RequestOptions{
 		Method: "GET",
 		Path:   path,
-		Query:  query,
+		Query:  queryParam,
 	}
 	err := api.http.Request(&result, options)
 	return &result, err
 }
 
-func (api *AddressBookAPI) CreateAddressBookRecord(body types.CreateAddressBookRecord) error {
+func (api *AddressBookAPI) CreateAddressBookRecord(body types.CreateAddressBookRecord) (*types.AddressBookRecord, error) {
 	path := fmt.Sprintf("/workspaces/%s/address-book-records", api.workspaceID)
+	var result types.AddressBookRecord
 	options := http.RequestOptions{
-			Method: "POST",
+		Method: "POST",
 		Path:   path,
 		Body:   body,
 	}
-	return api.http.Request(nil, options)
+	err := api.http.Request(&result, options)
+	return &result, err
 }
 
 func (api *AddressBookAPI) DeactivateAddressBookRecord(recordId string) (*types.Unit, error) {

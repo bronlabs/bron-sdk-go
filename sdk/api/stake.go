@@ -19,13 +19,17 @@ func NewStakeAPI(http *http.Client, workspaceID string) *StakeAPI {
 	}
 }
 
-func (api *StakeAPI) GetStakes(query *types.StakesQuery) (*types.Stakes, error) {
+func (api *StakeAPI) GetStakes(query ...*types.StakesQuery) (*types.Stakes, error) {
 	path := fmt.Sprintf("/workspaces/%s/stakes", api.workspaceID)
 	var result types.Stakes
+	var queryParam *types.StakesQuery
+	if len(query) > 0 && query[0] != nil {
+		queryParam = query[0]
+	}
 	options := http.RequestOptions{
 		Method: "GET",
 		Path:   path,
-		Query:  query,
+		Query:  queryParam,
 	}
 	err := api.http.Request(&result, options)
 	return &result, err

@@ -19,36 +19,44 @@ func NewTransactionsAPI(http *http.Client, workspaceID string) *TransactionsAPI 
 	}
 }
 
-func (api *TransactionsAPI) GetTransactions(query *types.TransactionsQuery) (*types.Transactions, error) {
+func (api *TransactionsAPI) GetTransactions(query ...*types.TransactionsQuery) (*types.Transactions, error) {
 	path := fmt.Sprintf("/workspaces/%s/transactions", api.workspaceID)
 	var result types.Transactions
+	var queryParam *types.TransactionsQuery
+	if len(query) > 0 && query[0] != nil {
+		queryParam = query[0]
+	}
 	options := http.RequestOptions{
 		Method: "GET",
 		Path:   path,
-		Query:  query,
+		Query:  queryParam,
 	}
 	err := api.http.Request(&result, options)
 	return &result, err
 }
 
-func (api *TransactionsAPI) CreateTransaction(body types.CreateTransaction) error {
+func (api *TransactionsAPI) CreateTransaction(body types.CreateTransaction) (*types.Transaction, error) {
 	path := fmt.Sprintf("/workspaces/%s/transactions", api.workspaceID)
+	var result types.Transaction
 	options := http.RequestOptions{
-			Method: "POST",
+		Method: "POST",
 		Path:   path,
 		Body:   body,
 	}
-	return api.http.Request(nil, options)
+	err := api.http.Request(&result, options)
+	return &result, err
 }
 
-func (api *TransactionsAPI) CreateMultipleTransactions(body types.CreateTransactions) error {
+func (api *TransactionsAPI) CreateMultipleTransactions(body types.CreateTransactions) (*types.Transactions, error) {
 	path := fmt.Sprintf("/workspaces/%s/transactions/bulk-create", api.workspaceID)
+	var result types.Transactions
 	options := http.RequestOptions{
-			Method: "POST",
+		Method: "POST",
 		Path:   path,
 		Body:   body,
 	}
-	return api.http.Request(nil, options)
+	err := api.http.Request(&result, options)
+	return &result, err
 }
 
 func (api *TransactionsAPI) DryRunTransaction(body types.CreateTransaction) (*types.Transaction, error) {
