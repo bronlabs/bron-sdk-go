@@ -19,47 +19,49 @@ func NewAddressBookAPI(http *http.Client, workspaceID string) *AddressBookAPI {
 	}
 }
 
-func (api *AddressBookAPI) GetAddressBookRecords(query *types.AddressBookRecordsQuery) (*types.AddressBookRecords, error) {
+func (api *AddressBookAPI) GetAddressBookRecords(query *types.AddressBookRecordsQuery) (interface{}, error) {
 	path := fmt.Sprintf("/workspaces/%s/address-book-records", api.workspaceID)
-	var result types.AddressBookRecords
+	var result interface{}
 	options := http.RequestOptions{
 		Method: "GET",
 		Path:   path,
 		Query:  query,
 	}
 	err := api.http.Request(&result, options)
-	return &result, err
+	return result, err
 }
 
-func (api *AddressBookAPI) CreateAddressBookRecord(body types.CreateAddressBookRecord) error {
+func (api *AddressBookAPI) CreateAddressBookRecord(body types.CreateAddressBookRecord) (interface{}, error) {
 	path := fmt.Sprintf("/workspaces/%s/address-book-records", api.workspaceID)
+	var result interface{}
 	options := http.RequestOptions{
-			Method: "POST",
+		Method: "POST",
 		Path:   path,
 		Body:   body,
 	}
-	return api.http.Request(nil, options)
+	err := api.http.Request(&result, options)
+	return result, err
 }
 
-func (api *AddressBookAPI) DeactivateAddressBookRecord(recordId string) (*types.Unit, error) {
+func (api *AddressBookAPI) DeactivateAddressBookRecord(recordId string) (interface{}, error) {
 	path := fmt.Sprintf("/workspaces/%s/address-book-records/%s", api.workspaceID, recordId)
-	var result types.Unit
+	var result interface{}
 	options := http.RequestOptions{
 		Method: "DELETE",
 		Path:   path,
 	}
 	err := api.http.Request(&result, options)
-	return &result, err
+	return result, err
 }
 
-func (api *AddressBookAPI) GetAddressBookRecordById(recordId string) (*types.AddressBookRecord, error) {
+func (api *AddressBookAPI) GetAddressBookRecordById(recordId string) (interface{}, error) {
 	path := fmt.Sprintf("/workspaces/%s/address-book-records/%s", api.workspaceID, recordId)
-	var result types.AddressBookRecord
+	var result interface{}
 	options := http.RequestOptions{
 		Method: "GET",
 		Path:   path,
 	}
 	err := api.http.Request(&result, options)
-	return &result, err
+	return result, err
 }
 

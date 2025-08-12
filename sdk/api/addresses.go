@@ -19,15 +19,15 @@ func NewAddressesAPI(http *http.Client, workspaceID string) *AddressesAPI {
 	}
 }
 
-func (api *AddressesAPI) GetDepositAddresses(query *types.DepositAddressesQuery) (*types.Addresses, error) {
+func (api *AddressesAPI) GetDepositAddresses(query *types.DepositAddressesQuery) (interface{}, error) {
 	path := fmt.Sprintf("/workspaces/%s/addresses", api.workspaceID)
-	var result types.Addresses
+	var result interface{}
 	options := http.RequestOptions{
 		Method: "GET",
 		Path:   path,
 		Query:  query,
 	}
 	err := api.http.Request(&result, options)
-	return &result, err
+	return result, err
 }
 
