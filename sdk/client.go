@@ -45,6 +45,7 @@ type clientOptions struct {
 	stdHTTP *nethttp.Client
 	signer  func(auth.BronJwtOptions) (string, error)
 	clock   func() time.Time
+	retry   *http.RetryPolicy
 }
 
 func WithNetHTTPClient(c *nethttp.Client) ClientOption {
@@ -57,6 +58,10 @@ func WithSigner(s func(auth.BronJwtOptions) (string, error)) ClientOption {
 
 func WithClock(cl func() time.Time) ClientOption {
 	return func(o *clientOptions) { o.clock = cl }
+}
+
+func WithRetryPolicy(p http.RetryPolicy) ClientOption {
+	return func(o *clientOptions) { o.retry = &p }
 }
 
 func NewBronClientWithOptions(config BronClientConfig, opts ...ClientOption) *BronClient {
@@ -76,6 +81,9 @@ func NewBronClientWithOptions(config BronClientConfig, opts ...ClientOption) *Br
 	}
 	if co.clock != nil {
 		httpClient.SetClock(co.clock)
+	}
+	if co.retry != nil {
+		httpClient.SetRetryPolicy(*co.retry)
 	}
 
 	client := &BronClient{

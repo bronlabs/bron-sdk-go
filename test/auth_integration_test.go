@@ -17,7 +17,7 @@ func TestAuthIntegration(t *testing.T) {
 		baseURL = "https://api.bron.org"
 	}
 	c := sdk.NewBronClient(sdk.BronClientConfig{APIKey: os.Getenv("BRON_API_KEY"), WorkspaceID: os.Getenv("BRON_WORKSPACE_ID"), BaseURL: baseURL})
-	if _, err := c.Workspaces.GetWorkspaceById(context.Background(), nil); err != nil {
+	if _, err := c.Workspaces.GetWorkspaceByID(context.Background(), nil); err != nil {
 		t.Fatalf("api error %v", err)
 	}
 }

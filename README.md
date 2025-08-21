@@ -240,6 +240,38 @@ if err != nil {
 }
 ```
 
+## Retries
+
+Enable exponential backoff + jitter retries (idempotent GET; honors Retry-After):
+
+```go
+// High-level
+client := sdk.NewBronClientWithOptions(cfg,
+  sdk.WithRetryPolicy(http.RetryPolicy{Max: 3, Base: 200 * time.Millisecond}),
+)
+
+// Low-level
+hc := http.NewClient(cfg.BaseURL, cfg.APIKey)
+hc.SetRetryPolicy(http.RetryPolicy{Max: 3, Base: 200 * time.Millisecond})
+```
+
+## Errors
+
+Structured errors are returned as `*http.APIError` on non-2xx responses.
+
+```go
+resp, err := client.Workspaces.GetWorkspaceByID(ctx)
+if err != nil {
+  var apiErr *http.APIError
+  if errors.As(err, &apiErr) {
+    log.Printf("API error: status=%d code=%s requestID=%s msg=%s", apiErr.Status, apiErr.Code, apiErr.RequestID, apiErr.Message)
+  } else {
+    log.Printf("Unexpected error: %v", err)
+  }
+  return
+}
+```
+
 ## License
 
 MIT License - see LICENSE file for details. 
