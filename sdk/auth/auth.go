@@ -19,10 +19,16 @@ type BronJwtOptions struct {
 	Body       string
 	Kid        string
 	PrivateKey string
+	Iat        *int64
 }
 
 func GenerateBronJwt(options BronJwtOptions) (string, error) {
-	iat := time.Now().Unix()
+	var iat int64
+	if options.Iat != nil {
+		iat = *options.Iat
+	} else {
+		iat = time.Now().Unix()
+	}
 	messageString := fmt.Sprintf("%d%s%s", iat, options.Method, options.Path+options.Body)
 
 	hash := sha256.Sum256([]byte(messageString))

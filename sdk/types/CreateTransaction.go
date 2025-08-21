@@ -1,9 +1,9 @@
 package types
 
 type CreateTransaction struct {
-	AccountId string `json:"accountId"`
+	AccountID string `json:"accountId"`
 	ExpiresAt *string `json:"expiresAt,omitempty"`
-	ExternalId string `json:"externalId"`
+	ExternalID string `json:"externalId"`
 	Params interface{} `json:"params,omitempty"`
 	TransactionType TransactionType `json:"transactionType"`
 }

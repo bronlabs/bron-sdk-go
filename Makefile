@@ -20,5 +20,5 @@ publish:
 	git add sdk/http/version.go;
 	git commit -am "Release v${VERSION}";
 	git push origin master;
-	git tag v${VERSION};
+	git tag -a v${VERSION} -m "Release v${VERSION}";
 	git push origin v${VERSION};

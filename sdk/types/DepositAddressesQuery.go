@@ -1,11 +1,11 @@
 package types
 
 type DepositAddressesQuery struct {
-	AccountId *string `json:"accountId,omitempty"`
-	AddressIds *[]string `json:"addressIds,omitempty"`
-	ExternalId *string `json:"externalId,omitempty"`
+	AccountID *string `json:"accountId,omitempty"`
+	AddressIDs *[]string `json:"addressIds,omitempty"`
+	ExternalID *string `json:"externalId,omitempty"`
 	AccountTypes *[]AccountType `json:"accountTypes,omitempty"`
-	NetworkId *string `json:"networkId,omitempty"`
+	NetworkID *string `json:"networkId,omitempty"`
 	Address *string `json:"address,omitempty"`
 	Statuses *[]AddressStatus `json:"statuses,omitempty"`
 	SortDirection *SortingDirection `json:"sortDirection,omitempty"`

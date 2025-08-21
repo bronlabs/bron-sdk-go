@@ -3,6 +3,7 @@ package api
 import (
 	"fmt"
 
+	"context"
 	"github.com/bronlabs/bron-sdk-go/sdk/http"
 	"github.com/bronlabs/bron-sdk-go/sdk/types"
 )
@@ -19,7 +20,7 @@ func NewStakeAPI(http *http.Client, workspaceID string) *StakeAPI {
 	}
 }
 
-func (api *StakeAPI) GetStakes(query ...*types.StakesQuery) (*types.Stakes, error) {
+func (api *StakeAPI) GetStakes(ctx context.Context, query ...*types.StakesQuery) (*types.Stakes, error) {
 	path := fmt.Sprintf("/workspaces/%s/stakes", api.workspaceID)
 	var result types.Stakes
 	var queryParam *types.StakesQuery
@@ -31,7 +32,7 @@ func (api *StakeAPI) GetStakes(query ...*types.StakesQuery) (*types.Stakes, erro
 		Path:   path,
 		Query:  queryParam,
 	}
-	err := api.http.Request(&result, options)
+	err := api.http.RequestWithContext(ctx, &result, options)
 	return &result, err
 }
 

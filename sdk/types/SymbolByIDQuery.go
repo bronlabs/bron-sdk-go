@@ -1,6 +1,6 @@
 package types
 
-type SymbolsQuery struct {
+type SymbolByIDQuery struct {
 	SymbolIDs *[]string `json:"symbolIds,omitempty"`
 	AssetIDs *[]string `json:"assetIds,omitempty"`
 	Limit *string `json:"limit,omitempty"`

@@ -3,6 +3,7 @@ package api
 import (
 	"fmt"
 
+	"context"
 	"github.com/bronlabs/bron-sdk-go/sdk/http"
 	"github.com/bronlabs/bron-sdk-go/sdk/types"
 )
@@ -19,7 +20,7 @@ func NewTransactionLimitsAPI(http *http.Client, workspaceID string) *Transaction
 	}
 }
 
-func (api *TransactionLimitsAPI) GetTransactionLimits(query ...*types.TransactionLimitsQuery) (*types.TransactionLimits, error) {
+func (api *TransactionLimitsAPI) GetTransactionLimits(ctx context.Context, query ...*types.TransactionLimitsQuery) (*types.TransactionLimits, error) {
 	path := fmt.Sprintf("/workspaces/%s/transaction-limits", api.workspaceID)
 	var result types.TransactionLimits
 	var queryParam *types.TransactionLimitsQuery
@@ -31,18 +32,18 @@ func (api *TransactionLimitsAPI) GetTransactionLimits(query ...*types.Transactio
 		Path:   path,
 		Query:  queryParam,
 	}
-	err := api.http.Request(&result, options)
+	err := api.http.RequestWithContext(ctx, &result, options)
 	return &result, err
 }
 
-func (api *TransactionLimitsAPI) GetTransactionLimitById(limitId string) (*types.TransactionLimit, error) {
+func (api *TransactionLimitsAPI) GetTransactionLimitByID(ctx context.Context, limitId string) (*types.TransactionLimit, error) {
 	path := fmt.Sprintf("/workspaces/%s/transaction-limits/%s", api.workspaceID, limitId)
 	var result types.TransactionLimit
 	options := http.RequestOptions{
 		Method: "GET",
 		Path:   path,
 	}
-	err := api.http.Request(&result, options)
+	err := api.http.RequestWithContext(ctx, &result, options)
 	return &result, err
 }
 
