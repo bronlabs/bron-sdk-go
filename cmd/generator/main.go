@@ -297,40 +297,6 @@ func (g *Generator) generateTypes() error {
 		}
 	}
 
-	// Emit transaction helpers (builders) for typed Params usage
-	if err := g.generateTypeHelpers(); err != nil {
-		return fmt.Errorf("failed to write helpers: %w", err)
-	}
-
-	return nil
-}
-
-func (g *Generator) generateTypeHelpers() error {
-	var sb strings.Builder
-	sb.WriteString("package types\n\n")
-	sb.WriteString("import \"encoding/json\"\n\n")
-	sb.WriteString("func NewWithdrawalTx(accountID, externalID string, params WithdrawalParams) CreateTransaction {\n")
-	sb.WriteString("\treturn CreateTransaction{\n")
-	sb.WriteString("\t\tAccountID:       accountID,\n")
-	sb.WriteString("\t\tExternalID:      externalID,\n")
-	sb.WriteString("\t\tTransactionType: TransactionType_WITHDRAWAL,\n")
-	sb.WriteString("\t\tParams:          params,\n")
-	sb.WriteString("\t}\n")
-	sb.WriteString("}\n\n")
-
-	sb.WriteString("func NewCustomTx(accountID, externalID string, txType TransactionType, raw json.RawMessage) CreateTransaction {\n")
-	sb.WriteString("\treturn CreateTransaction{\n")
-	sb.WriteString("\t\tAccountID:       accountID,\n")
-	sb.WriteString("\t\tExternalID:      externalID,\n")
-	sb.WriteString("\t\tTransactionType: txType,\n")
-	sb.WriteString("\t\tParams:          raw,\n")
-	sb.WriteString("\t}\n")
-	sb.WriteString("}\n")
-
-	filename := filepath.Join(g.typesDir, "TxBuilders.go")
-	if err := os.WriteFile(filename, []byte(sb.String()), 0644); err != nil {
-		return err
-	}
 	return nil
 }
 

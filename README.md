@@ -53,13 +53,17 @@ func main() {
 	networkID := "testETH"         // Network (ETH=mainnet, testETH=testnet)
 
 	// Create transaction - returns the created transaction
-	txBody := types.NewWithdrawalTx(accountID, uuid.New().String(), types.WithdrawalParams{
-		Amount:    amount,
-		NetworkID: &networkID,
-		Symbol:    &symbol,
-		ToAddress: &toAddress,
+	tx, err := client.Transactions.CreateTransaction(ctx, types.CreateTransaction{
+		AccountID:       accountID,
+		ExternalID:      uuid.New().String(),
+		TransactionType: types.TransactionType_WITHDRAWAL,
+		Params: types.WithdrawalParams{
+			Amount:    amount,
+			NetworkID: &networkID,
+			Symbol:    &symbol,
+			ToAddress: &toAddress,
+		},
 	})
-	tx, err := client.Transactions.CreateTransaction(ctx, txBody)
 
 	if err != nil {
 		log.Fatal("Error:", err)
@@ -103,12 +107,18 @@ if len(accounts.Accounts) > 0 {
 	}
 
 	// Create transaction - returns the created transaction
-	txBody := types.NewWithdrawalTx(account.AccountID, uuid.New().String(), types.WithdrawalParams{
-		Amount:    "73.042",
-		AssetID:   func() *string { v := "2"; return &v }(),
-		ToAddress: func() *string { v := "0x428CdE5631142916F295d7bb2DA9d1b5f49F0eF9"; return &v }(),
+	assetID := "2"
+	to := "0x428CdE5631142916F295d7bb2DA9d1b5f49F0eF9"
+	tx, err := client.Transactions.CreateTransaction(ctx, types.CreateTransaction{
+		AccountID:       account.AccountID,
+		ExternalID:      uuid.New().String(),
+		TransactionType: types.TransactionType_WITHDRAWAL,
+		Params: types.WithdrawalParams{
+			Amount:    "73.042",
+			AssetID:   &assetID,
+			ToAddress: &to,
+		},
 	})
-	tx, err := client.Transactions.CreateTransaction(ctx, txBody)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -165,13 +175,20 @@ All public API methods now take `context.Context` as the first argument. For sim
 Use typed builders to avoid `map[string]interface{}` for `params`:
 
 ```go
-tx := types.NewWithdrawalTx(accountID, uuid.New().String(), types.WithdrawalParams{
-    Amount:    "0.1",
-    NetworkID: func() *string { v := "testETH"; return &v }(),
-    Symbol:    func() *string { v := "ETH"; return &v }(),
-    ToAddress: func() *string { v := "0x..."; return &v }(),
+netID := "testETH"
+sym := "ETH"
+addr := "0x..."
+_, _ = client.Transactions.CreateTransaction(ctx, types.CreateTransaction{
+    AccountID:       accountID,
+    ExternalID:      uuid.New().String(),
+    TransactionType: types.TransactionType_WITHDRAWAL,
+    Params: types.WithdrawalParams{
+        Amount:    "0.1",
+        NetworkID: &netID,
+        Symbol:    &sym,
+        ToAddress: &addr,
+    },
 })
-_, _ = client.Transactions.CreateTransaction(ctx, tx)
 ```
 
 For advanced/custom cases not covered by typed params, use `json.RawMessage` via `types.NewCustomTx(...)`.

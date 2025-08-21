@@ -106,7 +106,15 @@ func TestSignerDI(t *testing.T) {
 
 func TestBuildersAndJSON(t *testing.T) {
 	nid := "testETH"
-	tx := types.NewWithdrawalTx("acc", "ext", types.WithdrawalParams{Amount: "1", NetworkID: &nid})
+	tx := types.CreateTransaction{
+		AccountID:       "acc",
+		ExternalID:      "ext",
+		TransactionType: types.TransactionType_WITHDRAWAL,
+		Params: types.WithdrawalParams{
+			Amount:    "1",
+			NetworkID: &nid,
+		},
+	}
 	b, err := json.Marshal(tx)
 	if err != nil {
 		t.Fatal(err)
