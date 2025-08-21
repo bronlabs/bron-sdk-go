@@ -1,14 +1,14 @@
 package types
 
 type Balance struct {
-	AccountId string `json:"accountId"`
+	AccountID string `json:"accountId"`
 	AccountType AccountType `json:"accountType"`
-	AssetId string `json:"assetId"`
-	BalanceId string `json:"balanceId"`
+	AssetID string `json:"assetId"`
+	BalanceID string `json:"balanceId"`
 	CreatedAt *string `json:"createdAt,omitempty"`
-	NetworkId *string `json:"networkId,omitempty"`
+	NetworkID *string `json:"networkId,omitempty"`
 	Symbol *string `json:"symbol,omitempty"`
 	TotalBalance *string `json:"totalBalance,omitempty"`
 	UpdatedAt *string `json:"updatedAt,omitempty"`
-	WorkspaceId string `json:"workspaceId"`
+	WorkspaceID string `json:"workspaceId"`
 }

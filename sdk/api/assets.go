@@ -3,6 +3,7 @@ package api
 import (
 	"fmt"
 
+	"context"
 	"github.com/bronlabs/bron-sdk-go/sdk/http"
 	"github.com/bronlabs/bron-sdk-go/sdk/types"
 )
@@ -19,7 +20,7 @@ func NewAssetsAPI(http *http.Client, workspaceID string) *AssetsAPI {
 	}
 }
 
-func (api *AssetsAPI) GetAssets(query ...*types.AssetsQuery) (*types.Assets, error) {
+func (api *AssetsAPI) GetAssets(ctx context.Context, query ...*types.AssetsQuery) (*types.Assets, error) {
 	path := fmt.Sprintf("/dictionary/assets")
 	var result types.Assets
 	var queryParam *types.AssetsQuery
@@ -31,14 +32,14 @@ func (api *AssetsAPI) GetAssets(query ...*types.AssetsQuery) (*types.Assets, err
 		Path:   path,
 		Query:  queryParam,
 	}
-	err := api.http.Request(&result, options)
+	err := api.http.RequestWithContext(ctx, &result, options)
 	return &result, err
 }
 
-func (api *AssetsAPI) GetAssetById(assetId string, query ...*types.AssetByIdQuery) (*types.Asset, error) {
+func (api *AssetsAPI) GetAssetByID(ctx context.Context, assetId string, query ...*types.AssetByIDQuery) (*types.Asset, error) {
 	path := fmt.Sprintf("/dictionary/assets/%s", assetId)
 	var result types.Asset
-	var queryParam *types.AssetByIdQuery
+	var queryParam *types.AssetByIDQuery
 	if len(query) > 0 && query[0] != nil {
 		queryParam = query[0]
 	}
@@ -47,11 +48,11 @@ func (api *AssetsAPI) GetAssetById(assetId string, query ...*types.AssetByIdQuer
 		Path:   path,
 		Query:  queryParam,
 	}
-	err := api.http.Request(&result, options)
+	err := api.http.RequestWithContext(ctx, &result, options)
 	return &result, err
 }
 
-func (api *AssetsAPI) GetNetworks(query ...*types.NetworksQuery) (*types.Networks, error) {
+func (api *AssetsAPI) GetNetworks(ctx context.Context, query ...*types.NetworksQuery) (*types.Networks, error) {
 	path := fmt.Sprintf("/dictionary/networks")
 	var result types.Networks
 	var queryParam *types.NetworksQuery
@@ -63,22 +64,22 @@ func (api *AssetsAPI) GetNetworks(query ...*types.NetworksQuery) (*types.Network
 		Path:   path,
 		Query:  queryParam,
 	}
-	err := api.http.Request(&result, options)
+	err := api.http.RequestWithContext(ctx, &result, options)
 	return &result, err
 }
 
-func (api *AssetsAPI) GetNetworkById(networkId string) (*types.Network, error) {
+func (api *AssetsAPI) GetNetworkByID(ctx context.Context, networkId string) (*types.Network, error) {
 	path := fmt.Sprintf("/dictionary/networks/%s", networkId)
 	var result types.Network
 	options := http.RequestOptions{
 		Method: "GET",
 		Path:   path,
 	}
-	err := api.http.Request(&result, options)
+	err := api.http.RequestWithContext(ctx, &result, options)
 	return &result, err
 }
 
-func (api *AssetsAPI) GetPrices(query ...*types.PricesQuery) (*types.SymbolMarketPrices, error) {
+func (api *AssetsAPI) GetPrices(ctx context.Context, query ...*types.PricesQuery) (*types.SymbolMarketPrices, error) {
 	path := fmt.Sprintf("/dictionary/symbol-market-prices")
 	var result types.SymbolMarketPrices
 	var queryParam *types.PricesQuery
@@ -90,11 +91,11 @@ func (api *AssetsAPI) GetPrices(query ...*types.PricesQuery) (*types.SymbolMarke
 		Path:   path,
 		Query:  queryParam,
 	}
-	err := api.http.Request(&result, options)
+	err := api.http.RequestWithContext(ctx, &result, options)
 	return &result, err
 }
 
-func (api *AssetsAPI) GetSymbols(query ...*types.SymbolsQuery) (*types.Symbols, error) {
+func (api *AssetsAPI) GetSymbols(ctx context.Context, query ...*types.SymbolsQuery) (*types.Symbols, error) {
 	path := fmt.Sprintf("/dictionary/symbols")
 	var result types.Symbols
 	var queryParam *types.SymbolsQuery
@@ -106,14 +107,14 @@ func (api *AssetsAPI) GetSymbols(query ...*types.SymbolsQuery) (*types.Symbols, 
 		Path:   path,
 		Query:  queryParam,
 	}
-	err := api.http.Request(&result, options)
+	err := api.http.RequestWithContext(ctx, &result, options)
 	return &result, err
 }
 
-func (api *AssetsAPI) GetSymbolById(symbolId string, query ...*types.SymbolByIdQuery) (*types.Symbol, error) {
+func (api *AssetsAPI) GetSymbolByID(ctx context.Context, symbolId string, query ...*types.SymbolByIDQuery) (*types.Symbol, error) {
 	path := fmt.Sprintf("/dictionary/symbols/%s", symbolId)
 	var result types.Symbol
-	var queryParam *types.SymbolByIdQuery
+	var queryParam *types.SymbolByIDQuery
 	if len(query) > 0 && query[0] != nil {
 		queryParam = query[0]
 	}
@@ -122,7 +123,7 @@ func (api *AssetsAPI) GetSymbolById(symbolId string, query ...*types.SymbolByIdQ
 		Path:   path,
 		Query:  queryParam,
 	}
-	err := api.http.Request(&result, options)
+	err := api.http.RequestWithContext(ctx, &result, options)
 	return &result, err
 }
 

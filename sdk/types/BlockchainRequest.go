@@ -1,5 +1,5 @@
 package types
 
 type BlockchainRequest struct {
-	NetworkId *string `json:"networkId,omitempty"`
+	NetworkID *string `json:"networkId,omitempty"`
 }

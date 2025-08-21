@@ -1,5 +1,5 @@
 package types
 
 type LimitSources struct {
-	AccountIds *[]string `json:"accountIds,omitempty"`
+	AccountIDs *[]string `json:"accountIds,omitempty"`
 }

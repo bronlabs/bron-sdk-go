@@ -3,6 +3,7 @@ package api
 import (
 	"fmt"
 
+	"context"
 	"github.com/bronlabs/bron-sdk-go/sdk/http"
 	"github.com/bronlabs/bron-sdk-go/sdk/types"
 )
@@ -19,7 +20,7 @@ func NewAddressesAPI(http *http.Client, workspaceID string) *AddressesAPI {
 	}
 }
 
-func (api *AddressesAPI) GetDepositAddresses(query ...*types.DepositAddressesQuery) (*types.Addresses, error) {
+func (api *AddressesAPI) GetDepositAddresses(ctx context.Context, query ...*types.DepositAddressesQuery) (*types.Addresses, error) {
 	path := fmt.Sprintf("/workspaces/%s/addresses", api.workspaceID)
 	var result types.Addresses
 	var queryParam *types.DepositAddressesQuery
@@ -31,7 +32,7 @@ func (api *AddressesAPI) GetDepositAddresses(query ...*types.DepositAddressesQue
 		Path:   path,
 		Query:  queryParam,
 	}
-	err := api.http.Request(&result, options)
+	err := api.http.RequestWithContext(ctx, &result, options)
 	return &result, err
 }
 

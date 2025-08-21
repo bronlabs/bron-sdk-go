@@ -5,8 +5,8 @@ type TransactionLimit struct {
 	CreatedAt string `json:"createdAt"`
 	CreatedBy *string `json:"createdBy,omitempty"`
 	Destinations LimitDestinations `json:"destinations"`
-	ExternalId string `json:"externalId"`
-	LimitId string `json:"limitId"`
+	ExternalID string `json:"externalId"`
+	LimitID string `json:"limitId"`
 	LimitRule LimitRule `json:"limitRule"`
 	LimitType TransactionLimitType `json:"limitType"`
 	Sources LimitSources `json:"sources"`
@@ -14,5 +14,5 @@ type TransactionLimit struct {
 	TransactionParams LimitTransactionParams `json:"transactionParams"`
 	UpdatedAt *string `json:"updatedAt,omitempty"`
 	UpdatedBy *string `json:"updatedBy,omitempty"`
-	WorkspaceId string `json:"workspaceId"`
+	WorkspaceID string `json:"workspaceId"`
 }

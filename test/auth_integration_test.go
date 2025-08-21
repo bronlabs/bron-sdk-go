@@ -1,6 +1,7 @@
 package test
 
 import (
+	"context"
 	"os"
 	"testing"
 
@@ -11,8 +12,12 @@ func TestAuthIntegration(t *testing.T) {
 	if os.Getenv("BRON_API_KEY") == "" {
 		t.Skip("set env vars to run")
 	}
-	c := sdk.NewBronClient(sdk.BronClientConfig{APIKey: os.Getenv("BRON_API_KEY"), WorkspaceID: os.Getenv("BRON_WORKSPACE_ID")})
-	if _, err := c.Workspaces.GetWorkspaceById(nil); err != nil {
+	baseURL := os.Getenv("BRON_BASE_URL")
+	if baseURL == "" {
+		baseURL = "https://api.bron.org"
+	}
+	c := sdk.NewBronClient(sdk.BronClientConfig{APIKey: os.Getenv("BRON_API_KEY"), WorkspaceID: os.Getenv("BRON_WORKSPACE_ID"), BaseURL: baseURL})
+	if _, err := c.Workspaces.GetWorkspaceById(context.Background(), nil); err != nil {
 		t.Fatalf("api error %v", err)
 	}
 }

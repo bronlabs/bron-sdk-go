@@ -3,6 +3,7 @@ package api
 import (
 	"fmt"
 
+	"context"
 	"github.com/bronlabs/bron-sdk-go/sdk/http"
 	"github.com/bronlabs/bron-sdk-go/sdk/types"
 )
@@ -19,10 +20,10 @@ func NewWorkspacesAPI(http *http.Client, workspaceID string) *WorkspacesAPI {
 	}
 }
 
-func (api *WorkspacesAPI) GetWorkspaceById(query ...*types.WorkspaceByIdQuery) (*types.Workspace, error) {
+func (api *WorkspacesAPI) GetWorkspaceByID(ctx context.Context, query ...*types.WorkspaceByIDQuery) (*types.Workspace, error) {
 	path := fmt.Sprintf("/workspaces/%s", api.workspaceID)
 	var result types.Workspace
-	var queryParam *types.WorkspaceByIdQuery
+	var queryParam *types.WorkspaceByIDQuery
 	if len(query) > 0 && query[0] != nil {
 		queryParam = query[0]
 	}
@@ -31,11 +32,11 @@ func (api *WorkspacesAPI) GetWorkspaceById(query ...*types.WorkspaceByIdQuery) (
 		Path:   path,
 		Query:  queryParam,
 	}
-	err := api.http.Request(&result, options)
+	err := api.http.RequestWithContext(ctx, &result, options)
 	return &result, err
 }
 
-func (api *WorkspacesAPI) GetActivities(query ...*types.ActivitiesQuery) (*types.Activities, error) {
+func (api *WorkspacesAPI) GetActivities(ctx context.Context, query ...*types.ActivitiesQuery) (*types.Activities, error) {
 	path := fmt.Sprintf("/workspaces/%s/activities", api.workspaceID)
 	var result types.Activities
 	var queryParam *types.ActivitiesQuery
@@ -47,11 +48,11 @@ func (api *WorkspacesAPI) GetActivities(query ...*types.ActivitiesQuery) (*types
 		Path:   path,
 		Query:  queryParam,
 	}
-	err := api.http.Request(&result, options)
+	err := api.http.RequestWithContext(ctx, &result, options)
 	return &result, err
 }
 
-func (api *WorkspacesAPI) GetWorkspaceMembers(query ...*types.WorkspaceMembersQuery) (*types.WorkspaceMembers, error) {
+func (api *WorkspacesAPI) GetWorkspaceMembers(ctx context.Context, query ...*types.WorkspaceMembersQuery) (*types.WorkspaceMembers, error) {
 	path := fmt.Sprintf("/workspaces/%s/members", api.workspaceID)
 	var result types.WorkspaceMembers
 	var queryParam *types.WorkspaceMembersQuery
@@ -63,7 +64,7 @@ func (api *WorkspacesAPI) GetWorkspaceMembers(query ...*types.WorkspaceMembersQu
 		Path:   path,
 		Query:  queryParam,
 	}
-	err := api.http.Request(&result, options)
+	err := api.http.RequestWithContext(ctx, &result, options)
 	return &result, err
 }
 

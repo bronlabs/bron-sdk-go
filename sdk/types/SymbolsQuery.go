@@ -1,8 +1,8 @@
 package types
 
 type SymbolsQuery struct {
-	SymbolIds *[]string `json:"symbolIds,omitempty"`
-	AssetIds *[]string `json:"assetIds,omitempty"`
+	SymbolIDs *[]string `json:"symbolIds,omitempty"`
+	AssetIDs *[]string `json:"assetIds,omitempty"`
 	Limit *string `json:"limit,omitempty"`
 	Offset *string `json:"offset,omitempty"`
 }

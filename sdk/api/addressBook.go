@@ -3,6 +3,7 @@ package api
 import (
 	"fmt"
 
+	"context"
 	"github.com/bronlabs/bron-sdk-go/sdk/http"
 	"github.com/bronlabs/bron-sdk-go/sdk/types"
 )
@@ -19,7 +20,7 @@ func NewAddressBookAPI(http *http.Client, workspaceID string) *AddressBookAPI {
 	}
 }
 
-func (api *AddressBookAPI) GetAddressBookRecords(query ...*types.AddressBookRecordsQuery) (*types.AddressBookRecords, error) {
+func (api *AddressBookAPI) GetAddressBookRecords(ctx context.Context, query ...*types.AddressBookRecordsQuery) (*types.AddressBookRecords, error) {
 	path := fmt.Sprintf("/workspaces/%s/address-book-records", api.workspaceID)
 	var result types.AddressBookRecords
 	var queryParam *types.AddressBookRecordsQuery
@@ -31,11 +32,11 @@ func (api *AddressBookAPI) GetAddressBookRecords(query ...*types.AddressBookReco
 		Path:   path,
 		Query:  queryParam,
 	}
-	err := api.http.Request(&result, options)
+	err := api.http.RequestWithContext(ctx, &result, options)
 	return &result, err
 }
 
-func (api *AddressBookAPI) CreateAddressBookRecord(body types.CreateAddressBookRecord) (*types.AddressBookRecord, error) {
+func (api *AddressBookAPI) CreateAddressBookRecord(ctx context.Context, body types.CreateAddressBookRecord) (*types.AddressBookRecord, error) {
 	path := fmt.Sprintf("/workspaces/%s/address-book-records", api.workspaceID)
 	var result types.AddressBookRecord
 	options := http.RequestOptions{
@@ -43,29 +44,29 @@ func (api *AddressBookAPI) CreateAddressBookRecord(body types.CreateAddressBookR
 		Path:   path,
 		Body:   body,
 	}
-	err := api.http.Request(&result, options)
+	err := api.http.RequestWithContext(ctx, &result, options)
 	return &result, err
 }
 
-func (api *AddressBookAPI) DeactivateAddressBookRecord(recordId string) (*types.Unit, error) {
+func (api *AddressBookAPI) DeactivateAddressBookRecord(ctx context.Context, recordId string) (*types.Unit, error) {
 	path := fmt.Sprintf("/workspaces/%s/address-book-records/%s", api.workspaceID, recordId)
 	var result types.Unit
 	options := http.RequestOptions{
 		Method: "DELETE",
 		Path:   path,
 	}
-	err := api.http.Request(&result, options)
+	err := api.http.RequestWithContext(ctx, &result, options)
 	return &result, err
 }
 
-func (api *AddressBookAPI) GetAddressBookRecordById(recordId string) (*types.AddressBookRecord, error) {
+func (api *AddressBookAPI) GetAddressBookRecordByID(ctx context.Context, recordId string) (*types.AddressBookRecord, error) {
 	path := fmt.Sprintf("/workspaces/%s/address-book-records/%s", api.workspaceID, recordId)
 	var result types.AddressBookRecord
 	options := http.RequestOptions{
 		Method: "GET",
 		Path:   path,
 	}
-	err := api.http.Request(&result, options)
+	err := api.http.RequestWithContext(ctx, &result, options)
 	return &result, err
 }
 

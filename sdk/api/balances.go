@@ -3,6 +3,7 @@ package api
 import (
 	"fmt"
 
+	"context"
 	"github.com/bronlabs/bron-sdk-go/sdk/http"
 	"github.com/bronlabs/bron-sdk-go/sdk/types"
 )
@@ -19,7 +20,7 @@ func NewBalancesAPI(http *http.Client, workspaceID string) *BalancesAPI {
 	}
 }
 
-func (api *BalancesAPI) GetBalances(query ...*types.BalancesQuery) (*types.Balances, error) {
+func (api *BalancesAPI) GetBalances(ctx context.Context, query ...*types.BalancesQuery) (*types.Balances, error) {
 	path := fmt.Sprintf("/workspaces/%s/balances", api.workspaceID)
 	var result types.Balances
 	var queryParam *types.BalancesQuery
@@ -31,18 +32,18 @@ func (api *BalancesAPI) GetBalances(query ...*types.BalancesQuery) (*types.Balan
 		Path:   path,
 		Query:  queryParam,
 	}
-	err := api.http.Request(&result, options)
+	err := api.http.RequestWithContext(ctx, &result, options)
 	return &result, err
 }
 
-func (api *BalancesAPI) GetBalanceById(balanceId string) (*types.Balance, error) {
+func (api *BalancesAPI) GetBalanceByID(ctx context.Context, balanceId string) (*types.Balance, error) {
 	path := fmt.Sprintf("/workspaces/%s/balances/%s", api.workspaceID, balanceId)
 	var result types.Balance
 	options := http.RequestOptions{
 		Method: "GET",
 		Path:   path,
 	}
-	err := api.http.Request(&result, options)
+	err := api.http.RequestWithContext(ctx, &result, options)
 	return &result, err
 }
 

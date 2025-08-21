@@ -3,6 +3,7 @@ package api
 import (
 	"fmt"
 
+	"context"
 	"github.com/bronlabs/bron-sdk-go/sdk/http"
 	"github.com/bronlabs/bron-sdk-go/sdk/types"
 )
@@ -19,7 +20,7 @@ func NewAccountsAPI(http *http.Client, workspaceID string) *AccountsAPI {
 	}
 }
 
-func (api *AccountsAPI) GetAccounts(query ...*types.AccountsQuery) (*types.Accounts, error) {
+func (api *AccountsAPI) GetAccounts(ctx context.Context, query ...*types.AccountsQuery) (*types.Accounts, error) {
 	path := fmt.Sprintf("/workspaces/%s/accounts", api.workspaceID)
 	var result types.Accounts
 	var queryParam *types.AccountsQuery
@@ -31,18 +32,18 @@ func (api *AccountsAPI) GetAccounts(query ...*types.AccountsQuery) (*types.Accou
 		Path:   path,
 		Query:  queryParam,
 	}
-	err := api.http.Request(&result, options)
+	err := api.http.RequestWithContext(ctx, &result, options)
 	return &result, err
 }
 
-func (api *AccountsAPI) GetAccountById(accountId string) (*types.Account, error) {
+func (api *AccountsAPI) GetAccountByID(ctx context.Context, accountId string) (*types.Account, error) {
 	path := fmt.Sprintf("/workspaces/%s/accounts/%s", api.workspaceID, accountId)
 	var result types.Account
 	options := http.RequestOptions{
 		Method: "GET",
 		Path:   path,
 	}
-	err := api.http.Request(&result, options)
+	err := api.http.RequestWithContext(ctx, &result, options)
 	return &result, err
 }
 

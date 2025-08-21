@@ -1,7 +1,7 @@
 package types
 
 type SymbolMarketPrice struct {
-	BaseSymbolId string `json:"baseSymbolId"`
+	BaseSymbolID string `json:"baseSymbolId"`
 	Price string `json:"price"`
-	QuoteSymbolId string `json:"quoteSymbolId"`
+	QuoteSymbolID string `json:"quoteSymbolId"`
 }

@@ -10,6 +10,87 @@ import (
 	"github.com/iancoleman/orderedmap"
 )
 
+// Common initialisms to preserve in exported identifiers
+var commonInitialisms = map[string]bool{
+	"API": true, "ASCII": true, "CPU": true, "CSS": true, "DNS": true, "EOF": true,
+	"GUID": true, "HTML": true, "HTTP": true, "HTTPS": true, "ID": true, "IP": true,
+	"JSON": true, "JWK": true, "JWT": true, "LHS": true, "QPS": true, "RAM": true,
+	"RHS": true, "RPC": true, "SLA": true, "SMTP": true, "SQL": true, "SSH": true,
+	"TCP": true, "TLS": true, "TTL": true, "UDP": true, "UI": true, "UID": true,
+	"UUID": true, "URI": true, "URL": true, "UTF8": true, "VM": true, "XML": true,
+	"XSRF": true, "XSS": true,
+}
+
+func splitIdentifierWords(s string) []string {
+	// Normalize separators to spaces
+	s = strings.ReplaceAll(s, "-", " ")
+	s = strings.ReplaceAll(s, "_", " ")
+	var words []string
+	var buf []rune
+	flush := func() {
+		if len(buf) > 0 {
+			words = append(words, string(buf))
+			buf = buf[:0]
+		}
+	}
+	runes := []rune(s)
+	for i := 0; i < len(runes); i++ {
+		r := runes[i]
+		if r == ' ' {
+			flush()
+			continue
+		}
+		if len(buf) == 0 {
+			buf = append(buf, r)
+			continue
+		}
+		prev := buf[len(buf)-1]
+		var next rune
+		if i+1 < len(runes) {
+			next = runes[i+1]
+		}
+		isUpper := r >= 'A' && r <= 'Z'
+		isPrevLower := prev >= 'a' && prev <= 'z'
+		isPrevUpper := prev >= 'A' && prev <= 'Z'
+		isNextLower := next >= 'a' && next <= 'z'
+		isDigit := r >= '0' && r <= '9'
+		if isDigit {
+			flush()
+			buf = append(buf, r)
+			flush()
+			continue
+		}
+		if isUpper && (isPrevLower || (isPrevUpper && isNextLower)) {
+			flush()
+		}
+		buf = append(buf, r)
+	}
+	flush()
+	return words
+}
+
+func toPascalWithInitialisms(s string) string {
+	words := splitIdentifierWords(s)
+	for i, w := range words {
+		upper := strings.ToUpper(w)
+		if commonInitialisms[upper] {
+			words[i] = upper
+			continue
+		}
+		if strings.HasSuffix(upper, "S") {
+			base := strings.TrimSuffix(upper, "S")
+			if commonInitialisms[base] {
+				words[i] = base + "s"
+				continue
+			}
+		}
+		if len(w) > 0 {
+			words[i] = strings.ToUpper(w[:1]) + strings.ToLower(w[1:])
+		}
+	}
+	return strings.Join(words, "")
+}
+
 type OpenApiSchema struct {
 	Type                 string                `json:"type,omitempty"`
 	Enum                 []interface{}         `json:"enum,omitempty"`
@@ -216,6 +297,40 @@ func (g *Generator) generateTypes() error {
 		}
 	}
 
+	// Emit transaction helpers (builders) for typed Params usage
+	if err := g.generateTypeHelpers(); err != nil {
+		return fmt.Errorf("failed to write helpers: %w", err)
+	}
+
+	return nil
+}
+
+func (g *Generator) generateTypeHelpers() error {
+	var sb strings.Builder
+	sb.WriteString("package types\n\n")
+	sb.WriteString("import \"encoding/json\"\n\n")
+	sb.WriteString("func NewWithdrawalTx(accountID, externalID string, params WithdrawalParams) CreateTransaction {\n")
+	sb.WriteString("\treturn CreateTransaction{\n")
+	sb.WriteString("\t\tAccountID:       accountID,\n")
+	sb.WriteString("\t\tExternalID:      externalID,\n")
+	sb.WriteString("\t\tTransactionType: TransactionType_WITHDRAWAL,\n")
+	sb.WriteString("\t\tParams:          params,\n")
+	sb.WriteString("\t}\n")
+	sb.WriteString("}\n\n")
+
+	sb.WriteString("func NewCustomTx(accountID, externalID string, txType TransactionType, raw json.RawMessage) CreateTransaction {\n")
+	sb.WriteString("\treturn CreateTransaction{\n")
+	sb.WriteString("\t\tAccountID:       accountID,\n")
+	sb.WriteString("\t\tExternalID:      externalID,\n")
+	sb.WriteString("\t\tTransactionType: txType,\n")
+	sb.WriteString("\t\tParams:          raw,\n")
+	sb.WriteString("\t}\n")
+	sb.WriteString("}\n")
+
+	filename := filepath.Join(g.typesDir, "TxBuilders.go")
+	if err := os.WriteFile(filename, []byte(sb.String()), 0644); err != nil {
+		return err
+	}
 	return nil
 }
 
@@ -507,7 +622,6 @@ type apiFileData struct {
 
 func (g *Generator) generateMethod(op OpenApiOperation, method, route string) string {
 	funcName := g.toCamelCase(op.Summary)
-	funcName = strings.ReplaceAll(funcName, "ID", "Id")
 
 	// Determine parameters
 	paramType, paramOptional, pathParams := g.processParameters(op)
@@ -531,21 +645,20 @@ func (g *Generator) generateMethod(op OpenApiOperation, method, route string) st
 		sb.WriteString(fmt.Sprintf("func (api *%sAPI) %s(", g.getAPIClassName(op), g.toProperPascalCase(funcName)))
 	}
 
+	// First parameter: context
+	sb.WriteString("ctx context.Context")
+
 	// Add path parameters
 	if len(pathParams) > 0 {
-		for i, param := range pathParams {
-			if i > 0 {
-				sb.WriteString(", ")
-			}
+		for _, param := range pathParams {
+			sb.WriteString(", ")
 			sb.WriteString(fmt.Sprintf("%s string", param.name))
 		}
 	}
 
 	// Add query parameter
 	if len(queryParams) > 0 {
-		if len(pathParams) > 0 {
-			sb.WriteString(", ")
-		}
+		sb.WriteString(", ")
 		baseName := g.toProperPascalCase(funcName)
 		if strings.HasPrefix(baseName, "Get") {
 			baseName = baseName[3:]
@@ -556,9 +669,7 @@ func (g *Generator) generateMethod(op OpenApiOperation, method, route string) st
 
 	// Add body parameter
 	if paramType != "interface{}" {
-		if len(pathParams) > 0 || len(queryParams) > 0 {
-			sb.WriteString(", ")
-		}
+		sb.WriteString(", ")
 		sb.WriteString(fmt.Sprintf("body%s types.%s", paramOptional, paramType))
 	}
 
@@ -619,10 +730,10 @@ func (g *Generator) generateMethod(op OpenApiOperation, method, route string) st
 	}
 	sb.WriteString("\t}\n")
 	if responseType != "" {
-		sb.WriteString("\terr := api.http.Request(&result, options)\n")
+		sb.WriteString("\terr := api.http.RequestWithContext(ctx, &result, options)\n")
 		sb.WriteString("\treturn &result, err\n")
 	} else {
-		sb.WriteString("\terr := api.http.Request(&result, options)\n")
+		sb.WriteString("\terr := api.http.RequestWithContext(ctx, &result, options)\n")
 		sb.WriteString("\treturn err\n")
 	}
 
@@ -639,6 +750,7 @@ func (g *Generator) generateAPIFile(fileName string, data *apiFileData) string {
 	// Imports
 	sb.WriteString("import (\n")
 	sb.WriteString("\t\"fmt\"\n\n")
+	sb.WriteString("\t\"context\"\n")
 	sb.WriteString("\t\"github.com/bronlabs/bron-sdk-go/sdk/http\"\n")
 	sb.WriteString("\t\"github.com/bronlabs/bron-sdk-go/sdk/types\"\n")
 	sb.WriteString(")\n\n")
@@ -785,13 +897,21 @@ func (g *Generator) toProperPascalCase(str string) string {
 	if str == "" {
 		return str
 	}
-
-	// Handle camelCase to PascalCase conversion
-	if len(str) > 0 {
-		return strings.ToUpper(str[:1]) + str[1:]
+	// Strip leading non-letter characters
+	i := 0
+	for i < len(str) {
+		c := str[i]
+		if (c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z') {
+			break
+		}
+		i++
 	}
-
-	return str
+	if i >= len(str) {
+		str = "Field"
+	} else if i > 0 {
+		str = str[i:]
+	}
+	return toPascalWithInitialisms(str)
 }
 
 func (g *Generator) getQueryTypeName(funcName string) string {
