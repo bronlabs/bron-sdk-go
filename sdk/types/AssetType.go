@@ -6,4 +6,5 @@ const (
 	AssetType_BLOCKCHAIN AssetType = "blockchain"
 	AssetType_EXCHANGE AssetType = "exchange"
 	AssetType_FIAT AssetType = "fiat"
+	AssetType_NFT AssetType = "nft"
 )
