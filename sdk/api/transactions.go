@@ -106,3 +106,14 @@ func (api *TransactionsAPI) CreateSigningRequest(ctx context.Context, transactio
 	return &result, err
 }
 
+func (api *TransactionsAPI) GetTransactionEvents(ctx context.Context, transactionId string) (*types.TransactionEvents, error) {
+	path := fmt.Sprintf("/workspaces/%s/transactions/%s/events", api.workspaceID, transactionId)
+	var result types.TransactionEvents
+	options := http.RequestOptions{
+		Method: "GET",
+		Path:   path,
+	}
+	err := api.http.RequestWithContext(ctx, &result, options)
+	return &result, err
+}
+

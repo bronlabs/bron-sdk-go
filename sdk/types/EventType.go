@@ -15,4 +15,7 @@ const (
 	EventType_ALLOWANCE EventType = "allowance"
 	EventType_NFT_IN EventType = "nft-in"
 	EventType_NFT_OUT EventType = "nft-out"
+	EventType_LOYALTY_LOCK EventType = "loyalty-lock"
+	EventType_LOYALTY_UNLOCK EventType = "loyalty-unlock"
+	EventType_LOYALTY_REWARD EventType = "loyalty-reward"
 )

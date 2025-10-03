@@ -5,6 +5,7 @@ type TransactionEvent struct {
 	AccountType AccountType `json:"accountType"`
 	Amount *string `json:"amount,omitempty"`
 	AssetID string `json:"assetId"`
+	BlockchainTxID *string `json:"blockchainTxId,omitempty"`
 	CreatedAt string `json:"createdAt"`
 	EventID string `json:"eventId"`
 	EventType EventType `json:"eventType"`

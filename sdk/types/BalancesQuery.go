@@ -4,7 +4,7 @@ type BalancesQuery struct {
 	AccountIDs *[]string `json:"accountIds,omitempty"`
 	BalanceIDs *[]string `json:"balanceIds,omitempty"`
 	AssetIDs *[]string `json:"assetIds,omitempty"`
-	NetworkID *string `json:"networkId,omitempty"`
+	NetworkIDs *[]string `json:"networkIds,omitempty"`
 	AccountTypes *[]AccountType `json:"accountTypes,omitempty"`
 	ExcludedAccountTypes *[]AccountType `json:"excludedAccountTypes,omitempty"`
 	NonEmpty *bool `json:"nonEmpty,omitempty"`

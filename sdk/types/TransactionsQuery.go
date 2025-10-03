@@ -22,4 +22,5 @@ type TransactionsQuery struct {
 	Limit *string `json:"limit,omitempty"`
 	Offset *string `json:"offset,omitempty"`
 	ExternalID *string `json:"externalId,omitempty"`
+	IncludeEvents *bool `json:"includeEvents,omitempty"`
 }

@@ -19,4 +19,5 @@ const (
 	TransactionStatus_FAILED_ON_BLOCKCHAIN TransactionStatus = "failed-on-blockchain"
 	TransactionStatus_REMOVED_FROM_BLOCKCHAIN TransactionStatus = "removed-from-blockchain"
 	TransactionStatus_ERROR TransactionStatus = "error"
+	TransactionStatus_AWAITING_DEPOSIT TransactionStatus = "awaiting-deposit"
 )

@@ -7,7 +7,6 @@ type TransactionExtra struct {
 	Confirmations *string `json:"confirmations,omitempty"`
 	DepositTransactionID *string `json:"depositTransactionId,omitempty"`
 	Description *string `json:"description,omitempty"`
-	ExternalBroadcast *bool `json:"externalBroadcast,omitempty"`
 	FromAccountID *string `json:"fromAccountId,omitempty"`
 	FromAddress *string `json:"fromAddress,omitempty"`
 	Memo *string `json:"memo,omitempty"`
