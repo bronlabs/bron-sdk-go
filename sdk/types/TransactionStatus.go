@@ -9,6 +9,7 @@ const (
 	TransactionStatus_APPROVED TransactionStatus = "approved"
 	TransactionStatus_AWAITING_SECURITY_POLICY TransactionStatus = "awaiting-security-policy"
 	TransactionStatus_COMPLETED TransactionStatus = "completed"
+	TransactionStatus_PARTIALLY_COMPLETED TransactionStatus = "partially-completed"
 	TransactionStatus_CANCELED TransactionStatus = "canceled"
 	TransactionStatus_EXPIRED TransactionStatus = "expired"
 	TransactionStatus_SIGNING_REQUIRED TransactionStatus = "signing-required"
@@ -20,4 +21,6 @@ const (
 	TransactionStatus_REMOVED_FROM_BLOCKCHAIN TransactionStatus = "removed-from-blockchain"
 	TransactionStatus_ERROR TransactionStatus = "error"
 	TransactionStatus_AWAITING_DEPOSIT TransactionStatus = "awaiting-deposit"
+	TransactionStatus_AWAITING_DEFI_EXECUTION TransactionStatus = "awaiting-defi-execution"
+	TransactionStatus_ACCEPTANCE_REQUIRED TransactionStatus = "acceptance-required"
 )

@@ -4,6 +4,7 @@ type TransactionsQuery struct {
 	TransactionIDs *[]string `json:"transactionIds,omitempty"`
 	TransactionTypes *[]TransactionType `json:"transactionTypes,omitempty"`
 	AccountTypes *[]AccountType `json:"accountTypes,omitempty"`
+	AccountID *string `json:"accountId,omitempty"`
 	AccountIDs *[]string `json:"accountIds,omitempty"`
 	TransactionStatuses *[]TransactionStatus `json:"transactionStatuses,omitempty"`
 	TransactionStatusNotIn *[]TransactionStatus `json:"transactionStatusNotIn,omitempty"`

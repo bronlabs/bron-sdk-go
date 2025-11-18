@@ -4,6 +4,7 @@ type SigningRequestStatus string
 
 const (
 	SigningRequestStatus_NEW SigningRequestStatus = "new"
+	SigningRequestStatus_SIGNING SigningRequestStatus = "signing"
 	SigningRequestStatus_SIGNED SigningRequestStatus = "signed"
 	SigningRequestStatus_BROADCASTED SigningRequestStatus = "broadcasted"
 	SigningRequestStatus_UNDER_RBF SigningRequestStatus = "under-rbf"

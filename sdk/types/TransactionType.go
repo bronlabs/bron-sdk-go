@@ -18,6 +18,8 @@ const (
 	TransactionType_LOYALTY_LOCK TransactionType = "loyalty-lock"
 	TransactionType_LOYALTY_UNLOCK TransactionType = "loyalty-unlock"
 	TransactionType_LOYALTY_COLLECT_REWARDS TransactionType = "loyalty-collect-rewards"
+	TransactionType_CANTON_REWARD TransactionType = "canton-reward"
 	TransactionType_NFT_DEPOSIT TransactionType = "nft-deposit"
 	TransactionType_NFT_WITHDRAWAL TransactionType = "nft-withdrawal"
+	TransactionType_NFT_ALLOWANCE TransactionType = "nft-allowance"
 )
