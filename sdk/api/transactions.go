@@ -60,9 +60,9 @@ func (api *TransactionsAPI) CreateMultipleTransactions(ctx context.Context, body
 	return &result, err
 }
 
-func (api *TransactionsAPI) DryRunTransaction(ctx context.Context, body types.CreateTransaction) (*types.Transaction, error) {
+func (api *TransactionsAPI) DryRunTransaction(ctx context.Context, body types.CreateTransaction) (*types.DryRunTransaction, error) {
 	path := fmt.Sprintf("/workspaces/%s/transactions/dry-run", api.workspaceID)
-	var result types.Transaction
+	var result types.DryRunTransaction
 	options := http.RequestOptions{
 		Method: "POST",
 		Path:   path,
@@ -83,7 +83,7 @@ func (api *TransactionsAPI) GetTransactionByID(ctx context.Context, transactionI
 	return &result, err
 }
 
-func (api *TransactionsAPI) AcceptDepositOffer(ctx context.Context, transactionId string, body types.AcceptOffer) (*types.Transaction, error) {
+func (api *TransactionsAPI) AcceptDepositOffer(ctx context.Context, transactionId string, body types.OfferActions) (*types.Transaction, error) {
 	path := fmt.Sprintf("/workspaces/%s/transactions/%s/accept-deposit-offer", api.workspaceID, transactionId)
 	var result types.Transaction
 	options := http.RequestOptions{
@@ -124,6 +124,18 @@ func (api *TransactionsAPI) GetTransactionEvents(ctx context.Context, transactio
 	options := http.RequestOptions{
 		Method: "GET",
 		Path:   path,
+	}
+	err := api.http.RequestWithContext(ctx, &result, options)
+	return &result, err
+}
+
+func (api *TransactionsAPI) RejectOutgoingOffer(ctx context.Context, transactionId string, body types.OfferActions) (*types.Transaction, error) {
+	path := fmt.Sprintf("/workspaces/%s/transactions/%s/reject-outgoing-offer", api.workspaceID, transactionId)
+	var result types.Transaction
+	options := http.RequestOptions{
+		Method: "POST",
+		Path:   path,
+		Body:   body,
 	}
 	err := api.http.RequestWithContext(ctx, &result, options)
 	return &result, err

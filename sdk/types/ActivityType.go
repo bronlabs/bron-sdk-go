@@ -18,6 +18,7 @@ const (
 	ActivityType_ADDRESS_BOOK_SETTINGS_APPROVAL_UPDATE ActivityType = "address-book-settings-approval-update"
 	ActivityType_TRANSACTION_LIMITS_APPROVAL_SETTINGS_UPDATE ActivityType = "transaction-limits-approval-settings-update"
 	ActivityType_MEMBER_CREATION ActivityType = "member-creation"
+	ActivityType_MEMBER_UPDATE ActivityType = "member-update"
 	ActivityType_SERVICE_MEMBER_CREATION ActivityType = "service-member-creation"
 	ActivityType_TRANSACTION_LIMIT_CREATION ActivityType = "transaction-limit-creation"
 	ActivityType_TRANSACTION_LIMIT_UPDATE ActivityType = "transaction-limit-update"
@@ -26,7 +27,7 @@ const (
 	ActivityType_PASSKEY_DELETION ActivityType = "passkey-deletion"
 	ActivityType_TYPE_2FA_CHANGE ActivityType = "2fa-change"
 	ActivityType_ACCOUNT_PINS_RESET ActivityType = "account-pins-reset"
-	ActivityType_SHARD_ACCESS_REQUEST_CREATED ActivityType = "shard-access-request-created"
-	ActivityType_SHARD_ACCESS_REQUEST_FINISHED ActivityType = "shard-access-request-finished"
+	ActivityType_SHARD_ACCESS_REQUEST_UPDATED ActivityType = "shard-access-request-updated"
 	ActivityType_TRANSACTION_COMPLETED ActivityType = "transaction-completed"
+	ActivityType_SUBSCRIPTION_UPDATED ActivityType = "subscription-updated"
 )

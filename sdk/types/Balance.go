@@ -10,5 +10,6 @@ type Balance struct {
 	Symbol *string `json:"symbol,omitempty"`
 	TotalBalance *string `json:"totalBalance,omitempty"`
 	UpdatedAt *string `json:"updatedAt,omitempty"`
+	WithdrawableBalance *string `json:"withdrawableBalance,omitempty"`
 	WorkspaceID string `json:"workspaceId"`
 }
