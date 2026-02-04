@@ -19,9 +19,11 @@ type TransactionsQuery struct {
 	UpdatedAtFrom *string `json:"updatedAtFrom,omitempty"`
 	UpdatedAtTo *string `json:"updatedAtTo,omitempty"`
 	CanSignWithDeviceID *string `json:"canSignWithDeviceId,omitempty"`
+	SortBy *SortBy `json:"sortBy,omitempty"`
 	SortDirection *SortingDirection `json:"sortDirection,omitempty"`
 	Limit *string `json:"limit,omitempty"`
 	Offset *string `json:"offset,omitempty"`
 	ExternalID *string `json:"externalId,omitempty"`
 	IncludeEvents *bool `json:"includeEvents,omitempty"`
+	IncludeCurrentSigningRequest *bool `json:"includeCurrentSigningRequest,omitempty"`
 }

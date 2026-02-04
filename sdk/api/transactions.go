@@ -95,6 +95,18 @@ func (api *TransactionsAPI) AcceptDepositOffer(ctx context.Context, transactionI
 	return &result, err
 }
 
+func (api *TransactionsAPI) ApproveTransaction(ctx context.Context, transactionId string, body types.ApproveTransaction) (*types.Transaction, error) {
+	path := fmt.Sprintf("/workspaces/%s/transactions/%s/approve", api.workspaceID, transactionId)
+	var result types.Transaction
+	options := http.RequestOptions{
+		Method: "POST",
+		Path:   path,
+		Body:   body,
+	}
+	err := api.http.RequestWithContext(ctx, &result, options)
+	return &result, err
+}
+
 func (api *TransactionsAPI) CancelTransaction(ctx context.Context, transactionId string, body types.CancelTransaction) (*types.Transaction, error) {
 	path := fmt.Sprintf("/workspaces/%s/transactions/%s/cancel", api.workspaceID, transactionId)
 	var result types.Transaction
@@ -113,6 +125,18 @@ func (api *TransactionsAPI) CreateSigningRequest(ctx context.Context, transactio
 	options := http.RequestOptions{
 		Method: "POST",
 		Path:   path,
+	}
+	err := api.http.RequestWithContext(ctx, &result, options)
+	return &result, err
+}
+
+func (api *TransactionsAPI) DeclineTransaction(ctx context.Context, transactionId string, body types.CancelTransaction) (*types.Transaction, error) {
+	path := fmt.Sprintf("/workspaces/%s/transactions/%s/decline", api.workspaceID, transactionId)
+	var result types.Transaction
+	options := http.RequestOptions{
+		Method: "POST",
+		Path:   path,
+		Body:   body,
 	}
 	err := api.http.RequestWithContext(ctx, &result, options)
 	return &result, err

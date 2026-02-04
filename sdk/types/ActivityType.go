@@ -30,4 +30,6 @@ const (
 	ActivityType_SHARD_ACCESS_REQUEST_UPDATED ActivityType = "shard-access-request-updated"
 	ActivityType_TRANSACTION_COMPLETED ActivityType = "transaction-completed"
 	ActivityType_SUBSCRIPTION_UPDATED ActivityType = "subscription-updated"
+	ActivityType_TRIAL_PROLONGATION_REQUESTED ActivityType = "trial-prolongation-requested"
+	ActivityType_TRIAL_PROLONGATED ActivityType = "trial-prolongated"
 )

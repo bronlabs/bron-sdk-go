@@ -20,6 +20,17 @@ func NewAssetsAPI(http *http.Client, workspaceID string) *AssetsAPI {
 	}
 }
 
+func (api *AssetsAPI) GetAssetPrices(ctx context.Context) (*types.AssetMarketPrices, error) {
+	path := fmt.Sprintf("/dictionary/asset-market-prices")
+	var result types.AssetMarketPrices
+	options := http.RequestOptions{
+		Method: "GET",
+		Path:   path,
+	}
+	err := api.http.RequestWithContext(ctx, &result, options)
+	return &result, err
+}
+
 func (api *AssetsAPI) GetAssets(ctx context.Context, query ...*types.AssetsQuery) (*types.Assets, error) {
 	path := fmt.Sprintf("/dictionary/assets")
 	var result types.Assets
