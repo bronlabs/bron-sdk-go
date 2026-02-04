@@ -1,3 +1,3 @@
 package http
 
-const SDK_VERSION = "0.1.10"
+const SDK_VERSION = "0.1.11"
