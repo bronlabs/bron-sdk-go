@@ -8,6 +8,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"math/big"
+	"strings"
 	"time"
 
 	"github.com/golang-jwt/jwt/v5"
@@ -29,7 +30,7 @@ func GenerateBronJwt(options BronJwtOptions) (string, error) {
 	} else {
 		iat = time.Now().Unix()
 	}
-	messageString := fmt.Sprintf("%d%s%s", iat, options.Method, options.Path+options.Body)
+	messageString := fmt.Sprintf("%d\n%s\n%s\n%s", iat, strings.ToUpper(options.Method), options.Path, options.Body)
 
 	hash := sha256.Sum256([]byte(messageString))
 	hashHex := fmt.Sprintf("%x", hash)
