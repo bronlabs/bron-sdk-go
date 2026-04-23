@@ -12,4 +12,5 @@ type WithdrawalParams struct {
 	ToAccountID *string `json:"toAccountId,omitempty"`
 	ToAddress *string `json:"toAddress,omitempty"`
 	ToAddressBookRecordID *string `json:"toAddressBookRecordId,omitempty"`
+	ToWorkspaceTag *string `json:"toWorkspaceTag,omitempty"`
 }

@@ -7,6 +7,7 @@ type AssetByIDQuery struct {
 	ContractAddress *string `json:"contractAddress,omitempty"`
 	ContractIssuer *string `json:"contractIssuer,omitempty"`
 	AssetType *AssetType `json:"assetType,omitempty"`
+	Search *string `json:"search,omitempty"`
 	Limit *string `json:"limit,omitempty"`
 	Offset *string `json:"offset,omitempty"`
 }

@@ -21,6 +21,8 @@ const (
 	TransactionStatus_REMOVED_FROM_BLOCKCHAIN TransactionStatus = "removed-from-blockchain"
 	TransactionStatus_ERROR TransactionStatus = "error"
 	TransactionStatus_AWAITING_DEPOSIT TransactionStatus = "awaiting-deposit"
+	TransactionStatus_AWAITING_CONVERSION TransactionStatus = "awaiting-conversion"
+	TransactionStatus_AWAITING_PAYOUT TransactionStatus = "awaiting-payout"
 	TransactionStatus_AWAITING_DEFI_EXECUTION TransactionStatus = "awaiting-defi-execution"
 	TransactionStatus_ACCEPTANCE_REQUIRED TransactionStatus = "acceptance-required"
 )

@@ -11,4 +11,6 @@ const (
 	NetworkTag_SUPPORTS_PARALLEL_SIGNING NetworkTag = "supports-parallel-signing"
 	NetworkTag_SUPPORTS_CHAINED_SIGNING NetworkTag = "supports-chained-signing"
 	NetworkTag_SUPPORTS_FEE_LEVELS NetworkTag = "supports-fee-levels"
+	NetworkTag_EVM NetworkTag = "evm"
+	NetworkTag_BRIDGE NetworkTag = "bridge"
 )

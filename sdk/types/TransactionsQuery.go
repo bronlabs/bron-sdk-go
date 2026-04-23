@@ -8,6 +8,7 @@ type TransactionsQuery struct {
 	AccountIDs *[]string `json:"accountIds,omitempty"`
 	TransactionStatuses *[]TransactionStatus `json:"transactionStatuses,omitempty"`
 	TransactionStatusNotIn *[]TransactionStatus `json:"transactionStatusNotIn,omitempty"`
+	AssetIDs *[]string `json:"assetIds,omitempty"`
 	BlockchainTxID *string `json:"blockchainTxId,omitempty"`
 	ToAccountID *string `json:"toAccountId,omitempty"`
 	ToAddress *string `json:"toAddress,omitempty"`

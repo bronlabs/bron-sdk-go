@@ -28,4 +28,7 @@ const (
 	TransactionType_NFT_DEPOSIT TransactionType = "nft-deposit"
 	TransactionType_NFT_WITHDRAWAL TransactionType = "nft-withdrawal"
 	TransactionType_NFT_ALLOWANCE TransactionType = "nft-allowance"
+	TransactionType_FIAT_OUT TransactionType = "fiat-out"
+	TransactionType_FIAT_IN TransactionType = "fiat-in"
+	TransactionType_BRIDGE TransactionType = "bridge"
 )

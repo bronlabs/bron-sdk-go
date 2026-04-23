@@ -1,3 +1,6 @@
 package types
 
-type Signed map[string]interface{}
+type Signed struct {
+	Signature *string `json:"signature,omitempty"`
+	Signatures *[]Signature `json:"signatures,omitempty"`
+}

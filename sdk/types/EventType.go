@@ -7,6 +7,7 @@ const (
 	EventType_OUT EventType = "out"
 	EventType_FEE EventType = "fee"
 	EventType_NEGATIVE_DEPOSIT EventType = "negative-deposit"
+	EventType_STAKE_DEPOSIT EventType = "stake-deposit"
 	EventType_STAKE_DELEGATION EventType = "stake-delegation"
 	EventType_STAKE_UNDELEGATION EventType = "stake-undelegation"
 	EventType_STAKE_WITHDRAWN EventType = "stake-withdrawn"
