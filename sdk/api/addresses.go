@@ -2,6 +2,7 @@ package api
 
 import (
 	"fmt"
+	"net/url"
 
 	"context"
 	"github.com/bronlabs/bron-sdk-go/sdk/http"
@@ -21,7 +22,7 @@ func NewAddressesAPI(http *http.Client, workspaceID string) *AddressesAPI {
 }
 
 func (api *AddressesAPI) GetDepositAddresses(ctx context.Context, query ...*types.DepositAddressesQuery) (*types.Addresses, error) {
-	path := fmt.Sprintf("/workspaces/%s/addresses", api.workspaceID)
+	path := fmt.Sprintf("/workspaces/%s/addresses", url.PathEscape(api.workspaceID))
 	var result types.Addresses
 	var queryParam *types.DepositAddressesQuery
 	if len(query) > 0 && query[0] != nil {

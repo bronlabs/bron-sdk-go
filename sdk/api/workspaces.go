@@ -2,6 +2,7 @@ package api
 
 import (
 	"fmt"
+	"net/url"
 
 	"context"
 	"github.com/bronlabs/bron-sdk-go/sdk/http"
@@ -21,7 +22,7 @@ func NewWorkspacesAPI(http *http.Client, workspaceID string) *WorkspacesAPI {
 }
 
 func (api *WorkspacesAPI) GetWorkspaceByID(ctx context.Context, query ...*types.WorkspaceByIDQuery) (*types.Workspace, error) {
-	path := fmt.Sprintf("/workspaces/%s", api.workspaceID)
+	path := fmt.Sprintf("/workspaces/%s", url.PathEscape(api.workspaceID))
 	var result types.Workspace
 	var queryParam *types.WorkspaceByIDQuery
 	if len(query) > 0 && query[0] != nil {
@@ -37,7 +38,7 @@ func (api *WorkspacesAPI) GetWorkspaceByID(ctx context.Context, query ...*types.
 }
 
 func (api *WorkspacesAPI) GetActivities(ctx context.Context, query ...*types.ActivitiesQuery) (*types.Activities, error) {
-	path := fmt.Sprintf("/workspaces/%s/activities", api.workspaceID)
+	path := fmt.Sprintf("/workspaces/%s/activities", url.PathEscape(api.workspaceID))
 	var result types.Activities
 	var queryParam *types.ActivitiesQuery
 	if len(query) > 0 && query[0] != nil {
@@ -53,7 +54,7 @@ func (api *WorkspacesAPI) GetActivities(ctx context.Context, query ...*types.Act
 }
 
 func (api *WorkspacesAPI) GetWorkspaceMembers(ctx context.Context, query ...*types.WorkspaceMembersQuery) (*types.WorkspaceMembers, error) {
-	path := fmt.Sprintf("/workspaces/%s/members", api.workspaceID)
+	path := fmt.Sprintf("/workspaces/%s/members", url.PathEscape(api.workspaceID))
 	var result types.WorkspaceMembers
 	var queryParam *types.WorkspaceMembersQuery
 	if len(query) > 0 && query[0] != nil {

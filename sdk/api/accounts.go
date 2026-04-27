@@ -2,6 +2,7 @@ package api
 
 import (
 	"fmt"
+	"net/url"
 
 	"context"
 	"github.com/bronlabs/bron-sdk-go/sdk/http"
@@ -21,7 +22,7 @@ func NewAccountsAPI(http *http.Client, workspaceID string) *AccountsAPI {
 }
 
 func (api *AccountsAPI) GetAccounts(ctx context.Context, query ...*types.AccountsQuery) (*types.Accounts, error) {
-	path := fmt.Sprintf("/workspaces/%s/accounts", api.workspaceID)
+	path := fmt.Sprintf("/workspaces/%s/accounts", url.PathEscape(api.workspaceID))
 	var result types.Accounts
 	var queryParam *types.AccountsQuery
 	if len(query) > 0 && query[0] != nil {
@@ -37,7 +38,7 @@ func (api *AccountsAPI) GetAccounts(ctx context.Context, query ...*types.Account
 }
 
 func (api *AccountsAPI) GetAccountByID(ctx context.Context, accountId string) (*types.Account, error) {
-	path := fmt.Sprintf("/workspaces/%s/accounts/%s", api.workspaceID, accountId)
+	path := fmt.Sprintf("/workspaces/%s/accounts/%s", url.PathEscape(api.workspaceID), url.PathEscape(accountId))
 	var result types.Account
 	options := http.RequestOptions{
 		Method: "GET",

@@ -2,6 +2,7 @@ package api
 
 import (
 	"fmt"
+	"net/url"
 
 	"context"
 	"github.com/bronlabs/bron-sdk-go/sdk/http"
@@ -21,7 +22,7 @@ func NewStakeAPI(http *http.Client, workspaceID string) *StakeAPI {
 }
 
 func (api *StakeAPI) GetStakes(ctx context.Context, query ...*types.StakesQuery) (*types.Stakes, error) {
-	path := fmt.Sprintf("/workspaces/%s/stakes", api.workspaceID)
+	path := fmt.Sprintf("/workspaces/%s/stakes", url.PathEscape(api.workspaceID))
 	var result types.Stakes
 	var queryParam *types.StakesQuery
 	if len(query) > 0 && query[0] != nil {
