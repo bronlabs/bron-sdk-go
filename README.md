@@ -1,294 +1,97 @@
-# Bron SDK Go
+# bron-sdk-go
 
-Go SDK for the Bron API. This is a complete port of the TypeScript SDK to Go, maintaining the same structure and functionality.
+Go SDK for the [Bron](https://bron.org) API. Auto-generated from the OpenAPI spec; thin layer on top — typed models, JWT signing, retries, structured errors. Looking for a CLI instead? See [`bron-cli`](https://github.com/bronlabs/bron-cli).
 
-## Features
-
-- **Complete API Coverage**: All Bron API endpoints are supported
-- **JWT Authentication**: Automatic JWT generation for API requests
-- **Key Generation**: Built-in JWK key pair generation
-- **Type Safety**: Strongly typed Go structs for all API responses
-- **Code Generation**: Automatic code generation from OpenAPI spec
-- **Optional Query Parameters**: No need to pass nil for empty queries
-- **Proper Return Types**: All methods return strongly typed responses
-- **Testing**: Comprehensive test suite
-
-## Installation
+## Install
 
 ```bash
 go get github.com/bronlabs/bron-sdk-go
 ```
 
-### Example
+## Authenticate
 
-```go
-package main
+Generate a P-256 keypair, paste the **public** half into the Bron UI (API keys), pass the **private** JWK to the client.
 
-import (
-	"log"
-	"os"
-	"context"
-  
-	"github.com/bronlabs/bron-sdk-go/sdk"
-	"github.com/bronlabs/bron-sdk-go/sdk/types"
-	"github.com/google/uuid"
-	"github.com/joho/godotenv"
-)
-
-func main() {
-	godotenv.Load()
-
-	client := sdk.NewBronClient(sdk.BronClientConfig{
-		APIKey:      os.Getenv("BRON_API_KEY"),
-		WorkspaceID: os.Getenv("BRON_WORKSPACE_ID"),
-	})
-
-	ctx := context.Background()
-
-	// Just change these values:
-	accountID := "your_account_id" // Your account ID
-	toAddress := "0x..."           // Where to send
-	amount := "0.001"              // How much to send
-	symbol := "ETH"                // What to send (ETH, BRON, etc.)
-	networkID := "testETH"         // Network (ETH=mainnet, testETH=testnet)
-
-	// Create transaction - returns the created transaction
-	tx, err := client.Transactions.CreateTransaction(ctx, types.CreateTransaction{
-		AccountID:       accountID,
-		ExternalID:      uuid.New().String(),
-		TransactionType: types.TransactionType_WITHDRAWAL,
-		Params: types.WithdrawalParams{
-			Amount:    amount,
-			NetworkID: &networkID,
-			Symbol:    &symbol,
-			ToAddress: &toAddress,
-		},
-	})
-
-	if err != nil {
-		log.Fatal("Error:", err)
-	}
-
-	log.Printf("✅ Transaction created: %s", tx.TransactionID)
-}
+```bash
+go run github.com/bronlabs/bron-sdk-go/cmd/keygen
 ```
 
-**Get Accounts & Balances:**
+```go
+client := sdk.NewBronClient(sdk.BronClientConfig{
+    APIKey:      os.Getenv("BRON_API_KEY"),       // private JWK
+    WorkspaceID: os.Getenv("BRON_WORKSPACE_ID"),
+    BaseURL:     os.Getenv("BRON_BASE_URL"),      // optional, default https://api.bron.org
+})
+```
+
+The SDK signs every request with a short-lived JWT (ES256). No token caching, no revocation flow.
+
+## Use
 
 ```go
 ctx := context.Background()
 
-// Get all accounts - no query parameters needed
-accounts, err := client.Accounts.GetAccounts(ctx)
-if err != nil {
-  log.Fatal(err)
-}
+accounts, _ := client.Accounts.GetAccounts(ctx)                                            // no filters
+accounts, _  = client.Accounts.GetAccounts(ctx, &types.AccountsQuery{Limit: ptr("50")})    // with filters
 
-// Get all balances - no query parameters needed
-balances, err := client.Balances.GetBalances(ctx)
-if err != nil {
-  log.Fatal(err)
-}
-
-// Get balances for first account with specific query
-if len(accounts.Accounts) > 0 {
-	account := accounts.Accounts[0]
-	accountIDs := []string{account.AccountID}
-	
-	balances, err := client.Balances.GetBalances(ctx, &types.BalancesQuery{
-		AccountIDs: &accountIDs,
-	})
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	for _, balance := range balances.Balances {
-		log.Printf("Balance %s (%s): %s", balance.AssetID, balance.Symbol, balance.TotalBalance)
-	}
-
-	// Create transaction - returns the created transaction
-	assetID := "2"
-	to := "0x428CdE5631142916F295d7bb2DA9d1b5f49F0eF9"
-	tx, err := client.Transactions.CreateTransaction(ctx, types.CreateTransaction{
-		AccountID:       account.AccountID,
-		ExternalID:      uuid.New().String(),
-		TransactionType: types.TransactionType_WITHDRAWAL,
-		Params: types.WithdrawalParams{
-			Amount:    "73.042",
-			AssetID:   &assetID,
-			ToAddress: &to,
-		},
-	})
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	log.Printf("Created transaction '%s': send %s", tx.TransactionID, tx.Params["amount"])
-}
-```
-
-**More Examples:**
-
-```go
-ctx := context.Background()
-
-// Get all transactions - no query parameters needed
-transactions, err := client.Transactions.GetTransactions(ctx)
-if err != nil {
-  log.Fatal(err)
-}
-
-// Get filtered transactions with query parameters
-limit := "10"
-filteredTransactions, err := client.Transactions.GetTransactions(ctx, &types.TransactionsQuery{
-	Limit: &limit,
-})
-if err != nil {
-  log.Fatal(err)
-}
-
-// Get all assets - no query parameters needed
-assets, err := client.Assets.GetAssets(ctx)
-if err != nil {
-  log.Fatal(err)
-}
-
-// Create address book record - returns the created record
-record, err := client.AddressBook.CreateAddressBookRecord(ctx, types.CreateAddressBookRecord{
-	Name:      "My Address",
-	Address:   "0x428CdE5631142916F295d7bb2DA9d1b5f49F0eF9",
-	NetworkID: "testETH",
-})
-if err != nil {
-  log.Fatal(err)
-}
-
-log.Printf("Created address book record: %s", record.RecordID)
-```
-
-## Context requirement
-
-All public API methods now take `context.Context` as the first argument. For simple usage, pass `context.Background()`. Use `context.WithTimeout`/`context.WithCancel` to control deadlines or cancellation across requests.
-
-## Typed transaction params
-
-Use typed builders to avoid `map[string]interface{}` for `params`:
-
-```go
-netID := "testETH"
-sym := "ETH"
-addr := "0x..."
-_, _ = client.Transactions.CreateTransaction(ctx, types.CreateTransaction{
-    AccountID:       accountID,
+netID, asset, addr := "ETH", "5000", "0x428C..."
+tx, err := client.Transactions.CreateTransaction(ctx, types.CreateTransaction{
+    AccountID:       accounts.Accounts[0].AccountID,
     ExternalID:      uuid.New().String(),
     TransactionType: types.TransactionType_WITHDRAWAL,
     Params: types.WithdrawalParams{
-        Amount:    "0.1",
-        NetworkID: &netID,
-        Symbol:    &sym,
-        ToAddress: &addr,
+        Amount: "0.1", AssetID: &asset, NetworkID: &netID, ToAddress: &addr,
     },
 })
 ```
 
-For advanced/custom cases not covered by typed params, use `json.RawMessage` via `types.NewCustomTx(...)`.
+- **Resources:** `client.Accounts`, `Balances`, `Transactions`, `AddressBook`, `Assets`, `Networks`, `Symbols`, `Stakes`, `Workspaces`, …
+- **Method shape:** `ctx` first; query struct is optional.
+- **Returns:** `Get*`/`Create*` → `(*types.Resource, error)`; void ops → `error`.
+- **Typed params per `transactionType`:** `WithdrawalParams`, `AllowanceParams`, `StakeDelegationParams`, `FiatOutParams`, … `Params` is `interface{}` — pass any struct (or `json.RawMessage`) for unsupported shapes.
 
-## Advanced configuration (functional options and DI)
+## Errors
 
-You can inject your own transport, signer, and clock without changing call sites.
-
-```go
-// net/http client injection (timeouts, retries, proxy, TLS, tracing, etc.)
-std := &http.Client{ Timeout: 10 * time.Second }
-client := sdk.NewBronClientWithOptions(sdk.BronClientConfig{
-  APIKey: os.Getenv("BRON_API_KEY"),
-  WorkspaceID: os.Getenv("BRON_WORKSPACE_ID"),
-  BaseURL: os.Getenv("BRON_BASE_URL"),
-}, sdk.WithNetHTTPClient(std))
-
-// Custom signer and deterministic clock (useful for tests)
-client = sdk.NewBronClientWithOptions(sdk.BronClientConfig{ /* ... */ },
-  sdk.WithSigner(func(o auth.BronJwtOptions) (string, error) { return auth.GenerateBronJwt(o) }),
-  sdk.WithClock(func() time.Time { return time.Unix(1_700_000_000, 0) }),
-)
-
-// Backwards compatible constructor still available:
-// client := sdk.NewBronClient(config)
-```
-
-## Configuration
-
-The SDK supports the following configuration options:
-
-- `APIKey`: Your private JWK (required)
-- `WorkspaceID`: Your workspace ID (required)
-- `BaseURL`: API base URL (defaults to https://api.bron.org)
-
-## Authentication
-
-The SDK automatically handles JWT generation for API requests. You only need to provide your private JWK as the API key.
-
-## Query Parameters
-
-Query parameters are now optional! You can:
-
-- **Call methods without parameters**: `client.Accounts.GetAccounts()`
-- **Call methods with query parameters**: `client.Accounts.GetAccounts(&types.AccountsQuery{Limit: &limit})`
-
-No need to pass `nil` when you don't want query parameters.
-
-## Return Types
-
-All API methods return strongly typed responses:
-
-- **GET methods**: Return `(*types.ResponseType, error)`
-- **POST methods**: Return `(*types.CreatedType, error)` (e.g., `CreateTransaction` returns `*types.Transaction`)
-- **Methods without response body**: Return `error`
-
-## Error Handling
-
-All API methods return errors that should be checked:
+Non-2xx responses come back as `*http.APIError` (`Status`, `Code`, `Message`, `RequestID`):
 
 ```go
-accounts, err := client.Accounts.GetAccounts()
-if err != nil {
-  log.Printf("API error: %v", err)
-  return
-}
+var apiErr *http.APIError
+if errors.As(err, &apiErr) { /* ... */ }
 ```
 
 ## Retries
 
-Enable exponential backoff + jitter retries (idempotent GET; honors Retry-After):
+Exponential backoff + jitter for idempotent verbs, honors `Retry-After`. Off by default.
 
 ```go
-// High-level
 client := sdk.NewBronClientWithOptions(cfg,
-  sdk.WithRetryPolicy(http.RetryPolicy{Max: 3, Base: 200 * time.Millisecond}),
+    sdk.WithRetryPolicy(http.RetryPolicy{Max: 3, Base: 200 * time.Millisecond}),
 )
-
-// Low-level
-hc := http.NewClient(cfg.BaseURL, cfg.APIKey)
-hc.SetRetryPolicy(http.RetryPolicy{Max: 3, Base: 200 * time.Millisecond})
 ```
 
-## Errors
+## Advanced
 
-Structured errors are returned as `*http.APIError` on non-2xx responses.
+Inject your own transport, signer, or clock — useful for proxies, tracing, deterministic tests:
 
 ```go
-resp, err := client.Workspaces.GetWorkspaceByID(ctx)
-if err != nil {
-  var apiErr *http.APIError
-  if errors.As(err, &apiErr) {
-    log.Printf("API error: status=%d code=%s requestID=%s msg=%s", apiErr.Status, apiErr.Code, apiErr.RequestID, apiErr.Message)
-  } else {
-    log.Printf("Unexpected error: %v", err)
-  }
-  return
-}
+client := sdk.NewBronClientWithOptions(cfg,
+    sdk.WithNetHTTPClient(&http.Client{Timeout: 10 * time.Second}),
+    sdk.WithSigner(func(o auth.BronJwtOptions) (string, error) { return auth.GenerateBronJwt(o) }),
+    sdk.WithClock(func() time.Time { return time.Unix(1_700_000_000, 0) }),
+)
 ```
+
+## Contributors
+
+```bash
+make generate    # regenerate sdk/types + sdk/api from bron-open-api-public.json
+make build
+make test
+make publish     # bumps patch, tags, pushes (release)
+```
+
+Keep `bron-open-api-public.json` in sync with the upstream public-api before regenerating.
 
 ## License
 
-MIT License - see LICENSE file for details. 
+MIT.
