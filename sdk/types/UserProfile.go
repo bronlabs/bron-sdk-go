@@ -1,7 +1,7 @@
 package types
 
 type UserProfile struct {
-	ImageID *string `json:"imageId,omitempty"`
+	Icon *string `json:"icon,omitempty"`
 	Name *string `json:"name,omitempty"`
 	UserID string `json:"userId"`
 }

@@ -1,7 +1,7 @@
 package types
 
 type Workspace struct {
-	ImageID *string `json:"imageId,omitempty"`
+	Icon *string `json:"icon,omitempty"`
 	Name string `json:"name"`
 	Tag string `json:"tag"`
 	WorkspaceID string `json:"workspaceId"`

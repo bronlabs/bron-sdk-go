@@ -237,14 +237,18 @@ func (c *Client) sleepCtx(ctx context.Context, d time.Duration) error {
 }
 
 func (c *Client) parseAPIError(resp *http.Response, body []byte) error {
-	reqID := resp.Header.Get("X-Request-ID")
-	if reqID == "" {
-		reqID = resp.Header.Get("X-Request-Id")
-	}
-	if reqID == "" {
-		reqID = resp.Header.Get("X-Correlation-ID")
+	// Bron public API exposes the trace id via the `Correlation-Id` response
+	// header AND as `id` in the error JSON body. Common alternate header
+	// spellings are checked too for cross-environment robustness.
+	var reqID string
+	for _, h := range []string{"Correlation-Id", "X-Correlation-ID", "X-Correlation-Id", "X-Request-ID", "X-Request-Id"} {
+		if v := resp.Header.Get(h); v != "" {
+			reqID = v
+			break
+		}
 	}
 	type errPayload struct {
+		ID               string `json:"id"`
 		Code             string `json:"code"`
 		Message          string `json:"message"`
 		Error            string `json:"error"`
@@ -265,7 +269,13 @@ func (c *Client) parseAPIError(resp *http.Response, body []byte) error {
 	}
 	code := p.Code
 	if code == "" {
+		code = p.Error
+	}
+	if code == "" {
 		code = http.StatusText(resp.StatusCode)
+	}
+	if reqID == "" {
+		reqID = p.ID
 	}
 	if reqID == "" {
 		reqID = p.RequestID

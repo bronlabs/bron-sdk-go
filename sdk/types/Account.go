@@ -8,6 +8,7 @@ type Account struct {
 	CreatedBy *string `json:"createdBy,omitempty"`
 	ExternalID string `json:"externalId"`
 	Extra *AccountExtra `json:"extra,omitempty"`
+	Icon *string `json:"icon,omitempty"`
 	IsTestnet *bool `json:"isTestnet,omitempty"`
 	ParentAccountID *string `json:"parentAccountId,omitempty"`
 	Status AccountStatus `json:"status"`
