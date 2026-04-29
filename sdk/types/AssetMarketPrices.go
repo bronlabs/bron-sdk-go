@@ -1,3 +1,5 @@
 package types
 
-type AssetMarketPrices map[string]interface{}
+type AssetMarketPrices struct {
+	Prices []AssetMarketPrice `json:"prices"`
+}
