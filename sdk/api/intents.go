@@ -2,6 +2,7 @@ package api
 
 import (
 	"fmt"
+	"net/url"
 
 	"context"
 	"github.com/bronlabs/bron-sdk-go/sdk/http"
@@ -21,7 +22,7 @@ func NewIntentsAPI(http *http.Client, workspaceID string) *IntentsAPI {
 }
 
 func (api *IntentsAPI) CreateIntentRequest(ctx context.Context, body types.CreateIntent) (*types.Intent, error) {
-	path := fmt.Sprintf("/workspaces/%s/intents", api.workspaceID)
+	path := fmt.Sprintf("/workspaces/%s/intents", url.PathEscape(api.workspaceID))
 	var result types.Intent
 	options := http.RequestOptions{
 		Method: "POST",
@@ -33,7 +34,7 @@ func (api *IntentsAPI) CreateIntentRequest(ctx context.Context, body types.Creat
 }
 
 func (api *IntentsAPI) GetIntentRequestByID(ctx context.Context, intentId string) (*types.Intent, error) {
-	path := fmt.Sprintf("/workspaces/%s/intents/%s", api.workspaceID, intentId)
+	path := fmt.Sprintf("/workspaces/%s/intents/%s", url.PathEscape(api.workspaceID), url.PathEscape(intentId))
 	var result types.Intent
 	options := http.RequestOptions{
 		Method: "GET",

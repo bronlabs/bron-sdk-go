@@ -2,6 +2,7 @@ package api
 
 import (
 	"fmt"
+	"net/url"
 
 	"context"
 	"github.com/bronlabs/bron-sdk-go/sdk/http"
@@ -21,7 +22,7 @@ func NewAddressBookAPI(http *http.Client, workspaceID string) *AddressBookAPI {
 }
 
 func (api *AddressBookAPI) GetAddressBookRecords(ctx context.Context, query ...*types.AddressBookRecordsQuery) (*types.AddressBookRecords, error) {
-	path := fmt.Sprintf("/workspaces/%s/address-book-records", api.workspaceID)
+	path := fmt.Sprintf("/workspaces/%s/address-book-records", url.PathEscape(api.workspaceID))
 	var result types.AddressBookRecords
 	var queryParam *types.AddressBookRecordsQuery
 	if len(query) > 0 && query[0] != nil {
@@ -37,7 +38,7 @@ func (api *AddressBookAPI) GetAddressBookRecords(ctx context.Context, query ...*
 }
 
 func (api *AddressBookAPI) CreateAddressBookRecord(ctx context.Context, body types.CreateAddressBookRecord) (*types.AddressBookRecord, error) {
-	path := fmt.Sprintf("/workspaces/%s/address-book-records", api.workspaceID)
+	path := fmt.Sprintf("/workspaces/%s/address-book-records", url.PathEscape(api.workspaceID))
 	var result types.AddressBookRecord
 	options := http.RequestOptions{
 		Method: "POST",
@@ -49,7 +50,7 @@ func (api *AddressBookAPI) CreateAddressBookRecord(ctx context.Context, body typ
 }
 
 func (api *AddressBookAPI) DeactivateAddressBookRecord(ctx context.Context, recordId string) (*types.Unit, error) {
-	path := fmt.Sprintf("/workspaces/%s/address-book-records/%s", api.workspaceID, recordId)
+	path := fmt.Sprintf("/workspaces/%s/address-book-records/%s", url.PathEscape(api.workspaceID), url.PathEscape(recordId))
 	var result types.Unit
 	options := http.RequestOptions{
 		Method: "DELETE",
@@ -60,7 +61,7 @@ func (api *AddressBookAPI) DeactivateAddressBookRecord(ctx context.Context, reco
 }
 
 func (api *AddressBookAPI) GetAddressBookRecordByID(ctx context.Context, recordId string) (*types.AddressBookRecord, error) {
-	path := fmt.Sprintf("/workspaces/%s/address-book-records/%s", api.workspaceID, recordId)
+	path := fmt.Sprintf("/workspaces/%s/address-book-records/%s", url.PathEscape(api.workspaceID), url.PathEscape(recordId))
 	var result types.AddressBookRecord
 	options := http.RequestOptions{
 		Method: "GET",

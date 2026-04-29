@@ -2,6 +2,7 @@ package api
 
 import (
 	"fmt"
+	"net/url"
 
 	"context"
 	"github.com/bronlabs/bron-sdk-go/sdk/http"
@@ -21,7 +22,7 @@ func NewTransactionLimitsAPI(http *http.Client, workspaceID string) *Transaction
 }
 
 func (api *TransactionLimitsAPI) GetTransactionLimits(ctx context.Context, query ...*types.TransactionLimitsQuery) (*types.TransactionLimits, error) {
-	path := fmt.Sprintf("/workspaces/%s/transaction-limits", api.workspaceID)
+	path := fmt.Sprintf("/workspaces/%s/transaction-limits", url.PathEscape(api.workspaceID))
 	var result types.TransactionLimits
 	var queryParam *types.TransactionLimitsQuery
 	if len(query) > 0 && query[0] != nil {
@@ -37,7 +38,7 @@ func (api *TransactionLimitsAPI) GetTransactionLimits(ctx context.Context, query
 }
 
 func (api *TransactionLimitsAPI) GetTransactionLimitByID(ctx context.Context, limitId string) (*types.TransactionLimit, error) {
-	path := fmt.Sprintf("/workspaces/%s/transaction-limits/%s", api.workspaceID, limitId)
+	path := fmt.Sprintf("/workspaces/%s/transaction-limits/%s", url.PathEscape(api.workspaceID), url.PathEscape(limitId))
 	var result types.TransactionLimit
 	options := http.RequestOptions{
 		Method: "GET",

@@ -2,6 +2,7 @@ package api
 
 import (
 	"fmt"
+	"net/url"
 
 	"context"
 	"github.com/bronlabs/bron-sdk-go/sdk/http"
@@ -53,7 +54,7 @@ func (api *AssetsAPI) GetAssets(ctx context.Context, query ...*types.AssetsQuery
 }
 
 func (api *AssetsAPI) GetAssetByID(ctx context.Context, assetId string, query ...*types.AssetByIDQuery) (*types.Asset, error) {
-	path := fmt.Sprintf("/dictionary/assets/%s", assetId)
+	path := fmt.Sprintf("/dictionary/assets/%s", url.PathEscape(assetId))
 	var result types.Asset
 	var queryParam *types.AssetByIDQuery
 	if len(query) > 0 && query[0] != nil {
@@ -85,7 +86,7 @@ func (api *AssetsAPI) GetNetworks(ctx context.Context, query ...*types.NetworksQ
 }
 
 func (api *AssetsAPI) GetNetworkByID(ctx context.Context, networkId string) (*types.Network, error) {
-	path := fmt.Sprintf("/dictionary/networks/%s", networkId)
+	path := fmt.Sprintf("/dictionary/networks/%s", url.PathEscape(networkId))
 	var result types.Network
 	options := http.RequestOptions{
 		Method: "GET",
@@ -128,7 +129,7 @@ func (api *AssetsAPI) GetSymbols(ctx context.Context, query ...*types.SymbolsQue
 }
 
 func (api *AssetsAPI) GetSymbolByID(ctx context.Context, symbolId string, query ...*types.SymbolByIDQuery) (*types.Symbol, error) {
-	path := fmt.Sprintf("/dictionary/symbols/%s", symbolId)
+	path := fmt.Sprintf("/dictionary/symbols/%s", url.PathEscape(symbolId))
 	var result types.Symbol
 	var queryParam *types.SymbolByIDQuery
 	if len(query) > 0 && query[0] != nil {

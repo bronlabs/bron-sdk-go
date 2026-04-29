@@ -2,6 +2,7 @@ package api
 
 import (
 	"fmt"
+	"net/url"
 
 	"context"
 	"github.com/bronlabs/bron-sdk-go/sdk/http"
@@ -21,7 +22,7 @@ func NewTransactionsAPI(http *http.Client, workspaceID string) *TransactionsAPI 
 }
 
 func (api *TransactionsAPI) GetTransactions(ctx context.Context, query ...*types.TransactionsQuery) (*types.Transactions, error) {
-	path := fmt.Sprintf("/workspaces/%s/transactions", api.workspaceID)
+	path := fmt.Sprintf("/workspaces/%s/transactions", url.PathEscape(api.workspaceID))
 	var result types.Transactions
 	var queryParam *types.TransactionsQuery
 	if len(query) > 0 && query[0] != nil {
@@ -37,7 +38,7 @@ func (api *TransactionsAPI) GetTransactions(ctx context.Context, query ...*types
 }
 
 func (api *TransactionsAPI) CreateTransaction(ctx context.Context, body types.CreateTransaction) (*types.Transaction, error) {
-	path := fmt.Sprintf("/workspaces/%s/transactions", api.workspaceID)
+	path := fmt.Sprintf("/workspaces/%s/transactions", url.PathEscape(api.workspaceID))
 	var result types.Transaction
 	options := http.RequestOptions{
 		Method: "POST",
@@ -49,7 +50,7 @@ func (api *TransactionsAPI) CreateTransaction(ctx context.Context, body types.Cr
 }
 
 func (api *TransactionsAPI) CreateMultipleTransactions(ctx context.Context, body types.CreateTransactions) (*types.Transactions, error) {
-	path := fmt.Sprintf("/workspaces/%s/transactions/bulk-create", api.workspaceID)
+	path := fmt.Sprintf("/workspaces/%s/transactions/bulk-create", url.PathEscape(api.workspaceID))
 	var result types.Transactions
 	options := http.RequestOptions{
 		Method: "POST",
@@ -61,7 +62,7 @@ func (api *TransactionsAPI) CreateMultipleTransactions(ctx context.Context, body
 }
 
 func (api *TransactionsAPI) DryRunTransaction(ctx context.Context, body types.CreateTransaction) (*types.DryRunTransaction, error) {
-	path := fmt.Sprintf("/workspaces/%s/transactions/dry-run", api.workspaceID)
+	path := fmt.Sprintf("/workspaces/%s/transactions/dry-run", url.PathEscape(api.workspaceID))
 	var result types.DryRunTransaction
 	options := http.RequestOptions{
 		Method: "POST",
@@ -73,7 +74,7 @@ func (api *TransactionsAPI) DryRunTransaction(ctx context.Context, body types.Cr
 }
 
 func (api *TransactionsAPI) GetTransactionByID(ctx context.Context, transactionId string) (*types.Transaction, error) {
-	path := fmt.Sprintf("/workspaces/%s/transactions/%s", api.workspaceID, transactionId)
+	path := fmt.Sprintf("/workspaces/%s/transactions/%s", url.PathEscape(api.workspaceID), url.PathEscape(transactionId))
 	var result types.Transaction
 	options := http.RequestOptions{
 		Method: "GET",
@@ -84,7 +85,7 @@ func (api *TransactionsAPI) GetTransactionByID(ctx context.Context, transactionI
 }
 
 func (api *TransactionsAPI) AcceptDepositOffer(ctx context.Context, transactionId string, body types.OfferActions) (*types.Transaction, error) {
-	path := fmt.Sprintf("/workspaces/%s/transactions/%s/accept-deposit-offer", api.workspaceID, transactionId)
+	path := fmt.Sprintf("/workspaces/%s/transactions/%s/accept-deposit-offer", url.PathEscape(api.workspaceID), url.PathEscape(transactionId))
 	var result types.Transaction
 	options := http.RequestOptions{
 		Method: "POST",
@@ -96,7 +97,7 @@ func (api *TransactionsAPI) AcceptDepositOffer(ctx context.Context, transactionI
 }
 
 func (api *TransactionsAPI) ApproveTransaction(ctx context.Context, transactionId string, body types.ApproveTransaction) (*types.Transaction, error) {
-	path := fmt.Sprintf("/workspaces/%s/transactions/%s/approve", api.workspaceID, transactionId)
+	path := fmt.Sprintf("/workspaces/%s/transactions/%s/approve", url.PathEscape(api.workspaceID), url.PathEscape(transactionId))
 	var result types.Transaction
 	options := http.RequestOptions{
 		Method: "POST",
@@ -108,7 +109,7 @@ func (api *TransactionsAPI) ApproveTransaction(ctx context.Context, transactionI
 }
 
 func (api *TransactionsAPI) CancelTransaction(ctx context.Context, transactionId string, body types.CancelTransaction) (*types.Transaction, error) {
-	path := fmt.Sprintf("/workspaces/%s/transactions/%s/cancel", api.workspaceID, transactionId)
+	path := fmt.Sprintf("/workspaces/%s/transactions/%s/cancel", url.PathEscape(api.workspaceID), url.PathEscape(transactionId))
 	var result types.Transaction
 	options := http.RequestOptions{
 		Method: "POST",
@@ -120,7 +121,7 @@ func (api *TransactionsAPI) CancelTransaction(ctx context.Context, transactionId
 }
 
 func (api *TransactionsAPI) CreateSigningRequest(ctx context.Context, transactionId string) (*types.Transaction, error) {
-	path := fmt.Sprintf("/workspaces/%s/transactions/%s/create-signing-request", api.workspaceID, transactionId)
+	path := fmt.Sprintf("/workspaces/%s/transactions/%s/create-signing-request", url.PathEscape(api.workspaceID), url.PathEscape(transactionId))
 	var result types.Transaction
 	options := http.RequestOptions{
 		Method: "POST",
@@ -131,7 +132,7 @@ func (api *TransactionsAPI) CreateSigningRequest(ctx context.Context, transactio
 }
 
 func (api *TransactionsAPI) DeclineTransaction(ctx context.Context, transactionId string, body types.CancelTransaction) (*types.Transaction, error) {
-	path := fmt.Sprintf("/workspaces/%s/transactions/%s/decline", api.workspaceID, transactionId)
+	path := fmt.Sprintf("/workspaces/%s/transactions/%s/decline", url.PathEscape(api.workspaceID), url.PathEscape(transactionId))
 	var result types.Transaction
 	options := http.RequestOptions{
 		Method: "POST",
@@ -143,7 +144,7 @@ func (api *TransactionsAPI) DeclineTransaction(ctx context.Context, transactionI
 }
 
 func (api *TransactionsAPI) GetTransactionEvents(ctx context.Context, transactionId string) (*types.TransactionEvents, error) {
-	path := fmt.Sprintf("/workspaces/%s/transactions/%s/events", api.workspaceID, transactionId)
+	path := fmt.Sprintf("/workspaces/%s/transactions/%s/events", url.PathEscape(api.workspaceID), url.PathEscape(transactionId))
 	var result types.TransactionEvents
 	options := http.RequestOptions{
 		Method: "GET",
@@ -154,7 +155,7 @@ func (api *TransactionsAPI) GetTransactionEvents(ctx context.Context, transactio
 }
 
 func (api *TransactionsAPI) RejectOutgoingOffer(ctx context.Context, transactionId string, body types.OfferActions) (*types.Transaction, error) {
-	path := fmt.Sprintf("/workspaces/%s/transactions/%s/reject-outgoing-offer", api.workspaceID, transactionId)
+	path := fmt.Sprintf("/workspaces/%s/transactions/%s/reject-outgoing-offer", url.PathEscape(api.workspaceID), url.PathEscape(transactionId))
 	var result types.Transaction
 	options := http.RequestOptions{
 		Method: "POST",

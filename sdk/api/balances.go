@@ -2,6 +2,7 @@ package api
 
 import (
 	"fmt"
+	"net/url"
 
 	"context"
 	"github.com/bronlabs/bron-sdk-go/sdk/http"
@@ -21,7 +22,7 @@ func NewBalancesAPI(http *http.Client, workspaceID string) *BalancesAPI {
 }
 
 func (api *BalancesAPI) GetBalances(ctx context.Context, query ...*types.BalancesQuery) (*types.Balances, error) {
-	path := fmt.Sprintf("/workspaces/%s/balances", api.workspaceID)
+	path := fmt.Sprintf("/workspaces/%s/balances", url.PathEscape(api.workspaceID))
 	var result types.Balances
 	var queryParam *types.BalancesQuery
 	if len(query) > 0 && query[0] != nil {
@@ -37,7 +38,7 @@ func (api *BalancesAPI) GetBalances(ctx context.Context, query ...*types.Balance
 }
 
 func (api *BalancesAPI) GetBalanceByID(ctx context.Context, balanceId string) (*types.Balance, error) {
-	path := fmt.Sprintf("/workspaces/%s/balances/%s", api.workspaceID, balanceId)
+	path := fmt.Sprintf("/workspaces/%s/balances/%s", url.PathEscape(api.workspaceID), url.PathEscape(balanceId))
 	var result types.Balance
 	options := http.RequestOptions{
 		Method: "GET",
