@@ -94,4 +94,4 @@ Keep `bron-open-api-public.json` in sync with the upstream public-api before reg
 
 ## License
 
-MIT.
+MIT License - see LICENSE file for details.
