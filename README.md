@@ -50,6 +50,82 @@ tx, err := client.Transactions.CreateTransaction(ctx, types.CreateTransaction{
 - **Returns:** `Get*`/`Create*` → `(*types.Resource, error)`; void ops → `error`.
 - **Typed params per `transactionType`:** `WithdrawalParams`, `AllowanceParams`, `StakeDelegationParams`, `FiatOutParams`, … `Params` is `interface{}` — pass any struct (or `json.RawMessage`) for unsupported shapes.
 
+## Subscribe (WebSocket)
+
+A subscription is "GET extended": same query as the matching list endpoint,
+the server replays the historical match as the first frame, then keeps the
+connection open and pushes live updates as additional frames of the same
+response shape (a list with one element per change in steady state).
+
+```go
+ctx, cancel := context.WithCancel(context.Background())
+defer cancel()
+
+stream, err := client.Transactions.Subscribe(ctx, &types.TransactionsQuery{
+    TransactionStatuses: &[]types.TransactionStatus{
+        types.TransactionStatus_SIGNING_REQUIRED,
+        types.TransactionStatus_WAITING_APPROVAL,
+    },
+})
+if err != nil { /* ... */ }
+defer stream.Close()
+
+for batch := range stream.Updates() {
+    for _, tx := range batch.Transactions {
+        log.Printf("tx %s → %s", tx.TransactionID, tx.Status)
+    }
+}
+if err := stream.Err(); err != nil {
+    log.Printf("stream ended: %v", err)
+}
+```
+
+- **First frame** = historical match (same shape as `GetTransactions`).
+- **Subsequent frames** = live updates, each typically a single-element list. Filters apply to both phases.
+- **Skip the initial replay**: pass `Limit: ptr("0")`, or use `SubscribeWithFilter(ctx, map[string]interface{}{"limit": 0, ...})` when the typed `*string` field doesn't carry through (backend wants an integer).
+- **Always `defer stream.Close()`** — sends `UNSUBSCRIBE` and tears down the WebSocket. Channel closes when ctx is cancelled, `Close` is called, or the connection drops; check `stream.Err()` after for the cause.
+- **Proxy** is honored automatically via `BronClientConfig.Proxy` (or `HTTP_PROXY` / `HTTPS_PROXY` env vars). Inject a custom `*websocket.Dialer` via `realtime.WithDialer` if you need TLS or NetDial overrides.
+
+### Auto-reconnect
+
+The transport keeps the subscription alive across server-initiated disconnects:
+
+- **Ping every 15s** so the server's ~60s idle timeout never fires.
+- **Transparent re-dial + re-SUBSCRIBE** on close 1006 / network drops / server restart, reusing the same `Correlation-Id` so log correlation stays stable.
+- **Linear backoff** 1s → 2s → … → 10s on flapping or dial failures; reset to 0 once a connection has been stable for 30s.
+- **Close code 4000** (logout) ends the stream permanently — `stream.Err()` returns the sentinel.
+- **Close code 4001** (token refresh) reconnects with a fixed 1s delay.
+
+On every reconnect the server replays the snapshot frame again, so callers
+should be prepared to see duplicates. Use `Limit: ptr("0")` (or
+`SubscribeWithFilter` with `"limit": 0`) when only live updates matter.
+
+### Observability
+
+```go
+import "log/slog"
+
+client := sdk.NewBronClientWithOptions(cfg,
+    // Structured logs to stderr, frame-level if you set Level: LevelDebug.
+    sdk.WithRealtimeLogger(slog.New(slog.NewTextHandler(os.Stderr, &slog.HandlerOptions{
+        Level: slog.LevelDebug,
+    }))),
+
+    // Or a programmatic hook for metrics/Sentry/whatever.
+    sdk.WithRealtimeLifecycleHandler(func(evt realtime.LifecycleEvent) {
+        switch evt.Kind {
+        case realtime.EventReconnecting:
+            metrics.Inc("ws.reconnecting", "uri", evt.URI)
+        case realtime.EventReconnected:
+            metrics.Inc("ws.reconnected", "attempts", evt.Attempt)
+        }
+    }),
+)
+```
+
+`LifecycleEvent` carries `CorrelationID`, `URI`, `Attempt`, `Backoff`, and
+the triggering `Err`. Authorization tokens never appear in logs.
+
 ## Errors
 
 Non-2xx responses come back as `*http.APIError` (`Status`, `Code`, `Message`, `RequestID`):
