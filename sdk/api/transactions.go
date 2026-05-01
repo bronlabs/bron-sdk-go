@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"sync"
 
 	"github.com/bronlabs/bron-sdk-go/sdk/http"
 	"github.com/bronlabs/bron-sdk-go/sdk/realtime"
@@ -198,13 +199,16 @@ func (api *TransactionsAPI) SubscribeWithFilter(ctx context.Context, filter inte
 // decoded *types.Transactions frames (initial match first, then live updates
 // — same shape both times).
 type TransactionsStream struct {
-	updates chan *types.Transactions
-	inner   *realtime.Stream
-	final   func() error
+	updates  chan *types.Transactions
+	inner    *realtime.Stream
+	final    func() error
+	done     chan struct{}
+	closeOnce sync.Once
 }
 
 func newTransactionsStream(inner *realtime.Stream) *TransactionsStream {
 	out := make(chan *types.Transactions, 16)
+	done := make(chan struct{})
 	var decodeErr error
 	go func() {
 		defer close(out)
@@ -221,12 +225,21 @@ func newTransactionsStream(inner *realtime.Stream) *TransactionsStream {
 				decodeErr = fmt.Errorf("decode transactions frame: %w", err)
 				return
 			}
-			out <- &v
+			// Non-blocking send: if Close has fired, exit instead of parking
+			// on a buffered channel the consumer will never drain. Without
+			// the `done` arm, a `bron_tx_wait_for_state` that returns on
+			// first match leaks this goroutine until process exit.
+			select {
+			case out <- &v:
+			case <-done:
+				return
+			}
 		}
 	}()
 	return &TransactionsStream{
 		updates: out,
 		inner:   inner,
+		done:    done,
 		final: func() error {
 			if decodeErr != nil {
 				return decodeErr
@@ -244,8 +257,13 @@ func (s *TransactionsStream) Updates() <-chan *types.Transactions { return s.upd
 func (s *TransactionsStream) Err() error { return s.final() }
 
 // Close sends UNSUBSCRIBE and tears down the connection. Safe to call
-// multiple times.
-func (s *TransactionsStream) Close() error { return s.inner.Close() }
+// multiple times — the underlying realtime.Stream.Close is idempotent and we
+// guard the `done` channel close with sync.Once so the decoder goroutine
+// observes the signal exactly once.
+func (s *TransactionsStream) Close() error {
+	s.closeOnce.Do(func() { close(s.done) })
+	return s.inner.Close()
+}
 
 func (api *TransactionsAPI) RejectOutgoingOffer(ctx context.Context, transactionId string, body types.OfferActions) (*types.Transaction, error) {
 	path := fmt.Sprintf("/workspaces/%s/transactions/%s/reject-outgoing-offer", api.workspaceID, transactionId)
