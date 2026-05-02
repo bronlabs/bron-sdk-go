@@ -1,6 +1,7 @@
 package types
 
 type TransactionsQuery struct {
+	TransactionID *string `json:"transactionId,omitempty"`
 	TransactionIDs *[]string `json:"transactionIds,omitempty"`
 	TransactionTypes *[]TransactionType `json:"transactionTypes,omitempty"`
 	AccountTypes *[]AccountType `json:"accountTypes,omitempty"`

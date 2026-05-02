@@ -8,4 +8,5 @@ type EventExtra struct {
 	SigningMessage *SigningMessage `json:"signingMessage,omitempty"`
 	StakeInfo *[]EventStakeInfo `json:"stakeInfo,omitempty"`
 	TransactionFailed *bool `json:"transactionFailed,omitempty"`
+	WalletStateInit *string `json:"walletStateInit,omitempty"`
 }

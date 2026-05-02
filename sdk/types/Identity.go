@@ -3,6 +3,7 @@ package types
 type Identity struct {
 	CreatedAt string `json:"createdAt"`
 	CreatedBy *string `json:"createdBy,omitempty"`
+	ExpiresAt *string `json:"expiresAt,omitempty"`
 	IdentityID string `json:"identityId"`
 	IdentityType IdentityType `json:"identityType"`
 	IdentityValue string `json:"identityValue"`
