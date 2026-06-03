@@ -3,6 +3,7 @@ package types
 type CreateAddressBookRecord struct {
 	AccountIDs *[]string `json:"accountIds,omitempty"`
 	Address *string `json:"address,omitempty"`
+	BankDetails *BankDetails `json:"bankDetails,omitempty"`
 	ExternalID string `json:"externalId"`
 	ImageID *string `json:"imageId,omitempty"`
 	Memo *string `json:"memo,omitempty"`

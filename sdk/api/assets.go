@@ -36,6 +36,22 @@ func (api *AssetsAPI) GetAssetPrices(ctx context.Context, query ...*types.AssetP
 	return &result, err
 }
 
+func (api *AssetsAPI) GetAssetPriceSeries(ctx context.Context, query ...*types.AssetPriceSeriesQuery) (*types.AssetPriceSeries, error) {
+	path := fmt.Sprintf("/dictionary/asset-price-series")
+	var result types.AssetPriceSeries
+	var queryParam *types.AssetPriceSeriesQuery
+	if len(query) > 0 && query[0] != nil {
+		queryParam = query[0]
+	}
+	options := http.RequestOptions{
+		Method: "GET",
+		Path:   path,
+		Query:  queryParam,
+	}
+	err := api.http.RequestWithContext(ctx, &result, options)
+	return &result, err
+}
+
 func (api *AssetsAPI) GetAssets(ctx context.Context, query ...*types.AssetsQuery) (*types.Assets, error) {
 	path := fmt.Sprintf("/dictionary/assets")
 	var result types.Assets

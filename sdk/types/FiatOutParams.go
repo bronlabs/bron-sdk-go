@@ -5,6 +5,5 @@ type FiatOutParams struct {
 	AssetID string `json:"assetId"`
 	FeeLevel *FeeLevel `json:"feeLevel,omitempty"`
 	FiatAssetID string `json:"fiatAssetId"`
-	NetworkID string `json:"networkId"`
 	ToAddressBookRecordID string `json:"toAddressBookRecordId"`
 }
