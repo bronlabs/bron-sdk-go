@@ -1,11 +1,11 @@
 package types
 
-type WithdrawalParams struct {
+type IntentSolverSettlementParams struct {
 	Amount string `json:"amount"`
 	AssetID *string `json:"assetId,omitempty"`
-	FeeAssetID *string `json:"feeAssetId,omitempty"`
 	FeeLevel *FeeLevel `json:"feeLevel,omitempty"`
 	IncludeFee *bool `json:"includeFee,omitempty"`
+	IntentID string `json:"intentId"`
 	Memo *string `json:"memo,omitempty"`
 	NetworkFees *RequestedNetworkFees `json:"networkFees,omitempty"`
 	NetworkID *string `json:"networkId,omitempty"`

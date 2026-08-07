@@ -1,6 +1,6 @@
 package types
 
-type DepositAddressesQuery struct {
+type AddressesQuery struct {
 	AccountID *string `json:"accountId,omitempty"`
 	AddressIDs *[]string `json:"addressIds,omitempty"`
 	ExternalID *string `json:"externalId,omitempty"`

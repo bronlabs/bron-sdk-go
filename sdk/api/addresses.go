@@ -20,10 +20,10 @@ func NewAddressesAPI(http *http.Client, workspaceID string) *AddressesAPI {
 	}
 }
 
-func (api *AddressesAPI) GetDepositAddresses(ctx context.Context, query ...*types.DepositAddressesQuery) (*types.Addresses, error) {
+func (api *AddressesAPI) GetAddresses(ctx context.Context, query ...*types.AddressesQuery) (*types.Addresses, error) {
 	path := fmt.Sprintf("/workspaces/%s/addresses", api.workspaceID)
 	var result types.Addresses
-	var queryParam *types.DepositAddressesQuery
+	var queryParam *types.AddressesQuery
 	if len(query) > 0 && query[0] != nil {
 		queryParam = query[0]
 	}

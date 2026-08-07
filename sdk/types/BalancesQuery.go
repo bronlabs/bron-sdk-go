@@ -13,6 +13,8 @@ type BalancesQuery struct {
 	ExcludedAccountTypes *[]AccountType `json:"excludedAccountTypes,omitempty"`
 	UpdatedSince *string `json:"updatedSince,omitempty"`
 	NonEmpty *bool `json:"nonEmpty,omitempty"`
+	RiskScoreThreshold *string `json:"riskScoreThreshold,omitempty"`
+	IsTestnet *bool `json:"isTestnet,omitempty"`
 	Limit *string `json:"limit,omitempty"`
 	Offset *string `json:"offset,omitempty"`
 }

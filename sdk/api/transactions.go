@@ -124,12 +124,13 @@ func (api *TransactionsAPI) CancelTransaction(ctx context.Context, transactionId
 	return &result, err
 }
 
-func (api *TransactionsAPI) CreateSigningRequest(ctx context.Context, transactionId string) (*types.Transaction, error) {
+func (api *TransactionsAPI) CreateSigningRequest(ctx context.Context, transactionId string, body types.CreateSigningRequest) (*types.Transaction, error) {
 	path := fmt.Sprintf("/workspaces/%s/transactions/%s/create-signing-request", api.workspaceID, transactionId)
 	var result types.Transaction
 	options := http.RequestOptions{
 		Method: "POST",
 		Path:   path,
+		Body:   body,
 	}
 	err := api.http.RequestWithContext(ctx, &result, options)
 	return &result, err

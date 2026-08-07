@@ -159,3 +159,19 @@ func (api *AssetsAPI) GetSymbolByID(ctx context.Context, symbolId string, query 
 	return &result, err
 }
 
+func (api *AssetsAPI) GetWorkspacePrices(ctx context.Context, query ...*types.WorkspacePricesQuery) (*types.SymbolMarketPrices, error) {
+	path := fmt.Sprintf("/workspaces/%s/symbol-market-prices", api.workspaceID)
+	var result types.SymbolMarketPrices
+	var queryParam *types.WorkspacePricesQuery
+	if len(query) > 0 && query[0] != nil {
+		queryParam = query[0]
+	}
+	options := http.RequestOptions{
+		Method: "GET",
+		Path:   path,
+		Query:  queryParam,
+	}
+	err := api.http.RequestWithContext(ctx, &result, options)
+	return &result, err
+}
+

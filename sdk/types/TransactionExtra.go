@@ -4,6 +4,7 @@ type TransactionExtra struct {
 	Approvers *TransactionApprovers `json:"approvers,omitempty"`
 	BlockchainDetails *[]BlockchainTxDetails `json:"blockchainDetails,omitempty"`
 	BlockchainRequest *BlockchainRequest `json:"blockchainRequest,omitempty"`
+	BronLock *BronLockExtra `json:"bronLock,omitempty"`
 	Confirmations *string `json:"confirmations,omitempty"`
 	DepositTransactionID *string `json:"depositTransactionId,omitempty"`
 	Description *string `json:"description,omitempty"`

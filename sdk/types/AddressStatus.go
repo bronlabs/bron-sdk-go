@@ -7,6 +7,7 @@ const (
 	AddressStatus_PENDING AddressStatus = "pending"
 	AddressStatus_ADDRESS_ACTIVATION_REQUIRED AddressStatus = "address-activation-required"
 	AddressStatus_ADDRESS_CREATION_REQUIRED AddressStatus = "address-creation-required"
+	AddressStatus_ADDRESS_ACTIVATION_IN_PROGRESS AddressStatus = "address-activation-in-progress"
 	AddressStatus_APPROVAL_PENDING AddressStatus = "approval-pending"
 	AddressStatus_ENABLED AddressStatus = "enabled"
 	AddressStatus_DISABLED AddressStatus = "disabled"

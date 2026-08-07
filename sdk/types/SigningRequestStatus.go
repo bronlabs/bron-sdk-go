@@ -8,6 +8,8 @@ const (
 	SigningRequestStatus_SIGNED SigningRequestStatus = "signed"
 	SigningRequestStatus_BROADCASTED SigningRequestStatus = "broadcasted"
 	SigningRequestStatus_UNDER_RBF SigningRequestStatus = "under-rbf"
+	SigningRequestStatus_WAITING_EXTERNAL_BROADCAST SigningRequestStatus = "waiting-external-broadcast"
+	SigningRequestStatus_WAITING_SPONSORED_BROADCAST SigningRequestStatus = "waiting-sponsored-broadcast"
 	SigningRequestStatus_COMPLETED SigningRequestStatus = "completed"
 	SigningRequestStatus_MANUAL_RESOLVING SigningRequestStatus = "manual-resolving"
 	SigningRequestStatus_CANCELED SigningRequestStatus = "canceled"

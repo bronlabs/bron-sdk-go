@@ -21,6 +21,7 @@ const (
 	TransactionType_STAKE_EARN_REWARD TransactionType = "stake-earn-reward"
 	TransactionType_SWAP_LIFI TransactionType = "swap-lifi"
 	TransactionType_INTENTS TransactionType = "intents"
+	TransactionType_INTENT_SOLVER_SETTLEMENT TransactionType = "intent-solver-settlement"
 	TransactionType_LOYALTY_LOCK TransactionType = "loyalty-lock"
 	TransactionType_LOYALTY_UNLOCK TransactionType = "loyalty-unlock"
 	TransactionType_LOYALTY_COLLECT_REWARDS TransactionType = "loyalty-collect-rewards"
@@ -31,4 +32,9 @@ const (
 	TransactionType_FIAT_OUT TransactionType = "fiat-out"
 	TransactionType_FIAT_IN TransactionType = "fiat-in"
 	TransactionType_BRIDGE TransactionType = "bridge"
+	TransactionType_EARN_BUY TransactionType = "earn-buy"
+	TransactionType_EARN_SELL TransactionType = "earn-sell"
+	TransactionType_POWER_BANK_CRYPTO_TOP_UP TransactionType = "power-bank-crypto-top-up"
+	TransactionType_POWER_BANK_CARD_TOP_UP TransactionType = "power-bank-card-top-up"
+	TransactionType_POWER_BANK_USAGE TransactionType = "power-bank-usage"
 )

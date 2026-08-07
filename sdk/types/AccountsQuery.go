@@ -5,7 +5,6 @@ type AccountsQuery struct {
 	ExcludedAccountTypes *[]AccountType `json:"excludedAccountTypes,omitempty"`
 	Statuses *[]AccountStatus `json:"statuses,omitempty"`
 	AccountIDs *[]string `json:"accountIds,omitempty"`
-	IsDefiVault *bool `json:"isDefiVault,omitempty"`
 	Offset *string `json:"offset,omitempty"`
 	Limit *string `json:"limit,omitempty"`
 	IsTestnet *bool `json:"isTestnet,omitempty"`

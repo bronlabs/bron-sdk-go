@@ -7,12 +7,15 @@ type TransactionsQuery struct {
 	AccountTypes *[]AccountType `json:"accountTypes,omitempty"`
 	AccountID *string `json:"accountId,omitempty"`
 	AccountIDs *[]string `json:"accountIds,omitempty"`
+	IsTestnet *bool `json:"isTestnet,omitempty"`
 	TransactionStatuses *[]TransactionStatus `json:"transactionStatuses,omitempty"`
 	TransactionStatusNotIn *[]TransactionStatus `json:"transactionStatusNotIn,omitempty"`
 	AssetIDs *[]string `json:"assetIds,omitempty"`
 	BlockchainTxID *string `json:"blockchainTxId,omitempty"`
 	ToAccountID *string `json:"toAccountId,omitempty"`
 	ToAddress *string `json:"toAddress,omitempty"`
+	FromAddress *string `json:"fromAddress,omitempty"`
+	Address *string `json:"address,omitempty"`
 	IsTerminated *bool `json:"isTerminated,omitempty"`
 	TerminatedAtFrom *string `json:"terminatedAtFrom,omitempty"`
 	TerminatedAtTo *string `json:"terminatedAtTo,omitempty"`
@@ -28,4 +31,5 @@ type TransactionsQuery struct {
 	ExternalID *string `json:"externalId,omitempty"`
 	IncludeEvents *bool `json:"includeEvents,omitempty"`
 	IncludeCurrentSigningRequest *bool `json:"includeCurrentSigningRequest,omitempty"`
+	IncludeAttestationSignature *bool `json:"includeAttestationSignature,omitempty"`
 }

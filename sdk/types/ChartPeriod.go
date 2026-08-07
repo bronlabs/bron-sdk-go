@@ -9,5 +9,6 @@ const (
 	ChartPeriod_TYPE_1M ChartPeriod = "1m"
 	ChartPeriod_TYPE_6M ChartPeriod = "6m"
 	ChartPeriod_TYPE_1Y ChartPeriod = "1y"
+	ChartPeriod_YTD ChartPeriod = "ytd"
 	ChartPeriod_ALL ChartPeriod = "all"
 )

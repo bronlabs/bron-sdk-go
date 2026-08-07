@@ -5,11 +5,13 @@ type Intent struct {
 	ExpiresAt *string `json:"expiresAt,omitempty"`
 	FromAmount *string `json:"fromAmount,omitempty"`
 	FromAssetID string `json:"fromAssetId"`
+	FromTokenID *string `json:"fromTokenId,omitempty"`
 	IntentID string `json:"intentId"`
 	Price *string `json:"price,omitempty"`
 	Status IntentOrderStatus `json:"status"`
 	ToAmount *string `json:"toAmount,omitempty"`
 	ToAssetID string `json:"toAssetId"`
+	ToTokenID *string `json:"toTokenId,omitempty"`
 	UpdatedAt string `json:"updatedAt"`
 	UserSettlementDeadline *string `json:"userSettlementDeadline,omitempty"`
 }
