@@ -92,11 +92,17 @@ func NewBronClientWithOptions(config BronClientConfig, opts ...ClientOption) *Br
 		opt(co)
 	}
 
+	// Default base URL if not provided
+	baseURL := config.BaseURL
+	if baseURL == "" {
+		baseURL = "https://api.bron.org"
+	}
+
 	var httpClient *http.Client
 	if co.stdHTTP != nil {
-		httpClient = http.NewClientWithHTTP(config.BaseURL, config.APIKey, co.stdHTTP)
+		httpClient = http.NewClientWithHTTP(baseURL, config.APIKey, co.stdHTTP)
 	} else {
-		httpClient = http.NewClient(config.BaseURL, config.APIKey)
+		httpClient = http.NewClient(baseURL, config.APIKey)
 	}
 	if co.signer != nil {
 		httpClient.SetSigner(co.signer)
@@ -111,7 +117,7 @@ func NewBronClientWithOptions(config BronClientConfig, opts ...ClientOption) *Br
 	client := &BronClient{
 		http:        httpClient,
 		workspaceID: config.WorkspaceID,
-		baseURL:     config.BaseURL,
+		baseURL:     baseURL,
 		apiKey:      config.APIKey,
 	}
 
