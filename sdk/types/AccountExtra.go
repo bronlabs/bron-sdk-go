@@ -1,3 +1,5 @@
 package types
 
-type AccountExtra map[string]interface{}
+type AccountExtra struct {
+	OnlyAddressBookWithdrawals *bool `json:"onlyAddressBookWithdrawals,omitempty"`
+}

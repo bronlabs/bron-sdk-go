@@ -20,6 +20,17 @@ func NewIntentsAPI(http *http.Client, workspaceID string) *IntentsAPI {
 	}
 }
 
+func (api *IntentsAPI) GetIntentSwapPairs(ctx context.Context) (*types.PublicIntentPairs, error) {
+	path := fmt.Sprintf("/dictionary/intent-pairs")
+	var result types.PublicIntentPairs
+	options := http.RequestOptions{
+		Method: "GET",
+		Path:   path,
+	}
+	err := api.http.RequestWithContext(ctx, &result, options)
+	return &result, err
+}
+
 func (api *IntentsAPI) CreateIntentRequest(ctx context.Context, body types.CreateIntent) (*types.Intent, error) {
 	path := fmt.Sprintf("/workspaces/%s/intents", api.workspaceID)
 	var result types.Intent

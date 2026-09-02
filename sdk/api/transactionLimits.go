@@ -36,6 +36,22 @@ func (api *TransactionLimitsAPI) GetTransactionLimits(ctx context.Context, query
 	return &result, err
 }
 
+func (api *TransactionLimitsAPI) GetLimitApproverCandidates(ctx context.Context, query ...*types.LimitApproverCandidatesQuery) (*types.LimitApproverCandidates, error) {
+	path := fmt.Sprintf("/workspaces/%s/transaction-limits/approver-candidates", api.workspaceID)
+	var result types.LimitApproverCandidates
+	var queryParam *types.LimitApproverCandidatesQuery
+	if len(query) > 0 && query[0] != nil {
+		queryParam = query[0]
+	}
+	options := http.RequestOptions{
+		Method: "GET",
+		Path:   path,
+		Query:  queryParam,
+	}
+	err := api.http.RequestWithContext(ctx, &result, options)
+	return &result, err
+}
+
 func (api *TransactionLimitsAPI) GetTransactionLimitByID(ctx context.Context, limitId string) (*types.TransactionLimit, error) {
 	path := fmt.Sprintf("/workspaces/%s/transaction-limits/%s", api.workspaceID, limitId)
 	var result types.TransactionLimit
