@@ -13,4 +13,7 @@ type AddressBookRecordsQuery struct {
 	RecordType *RecordType `json:"recordType,omitempty"`
 	RecordTypes *[]RecordType `json:"recordTypes,omitempty"`
 	Statuses *[]RecordStatus `json:"statuses,omitempty"`
+	Label *string `json:"label,omitempty"`
+	IsFavorite *bool `json:"isFavorite,omitempty"`
+	IncludeLabels *bool `json:"includeLabels,omitempty"`
 }

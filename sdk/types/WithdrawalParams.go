@@ -9,6 +9,7 @@ type WithdrawalParams struct {
 	Memo *string `json:"memo,omitempty"`
 	NetworkFees *RequestedNetworkFees `json:"networkFees,omitempty"`
 	NetworkID *string `json:"networkId,omitempty"`
+	RecipientEmail *string `json:"recipientEmail,omitempty"`
 	Symbol *string `json:"symbol,omitempty"`
 	ToAccountID *string `json:"toAccountId,omitempty"`
 	ToAddress *string `json:"toAddress,omitempty"`

@@ -1,6 +1,7 @@
 package types
 
 type IntentsQuote struct {
+	Embedded *IntentsQuoteEmbedded `json:"_embedded,omitempty"`
 	FromAmount string `json:"fromAmount"`
 	FromAssetID string `json:"fromAssetId"`
 	MinPrice string `json:"minPrice"`

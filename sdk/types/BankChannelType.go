@@ -7,5 +7,6 @@ const (
 	BankChannelType_ACH BankChannelType = "ach"
 	BankChannelType_SWIFT BankChannelType = "swift"
 	BankChannelType_FEDWIRE BankChannelType = "fedwire"
+	BankChannelType_FEDNOW BankChannelType = "fednow"
 	BankChannelType_LOCAL BankChannelType = "local"
 )

@@ -12,4 +12,5 @@ const (
 	HashFunction_SHA512_HALF HashFunction = "sha512_half"
 	HashFunction_SHA512_256 HashFunction = "sha512_256"
 	HashFunction_POSEIDON HashFunction = "poseidon"
+	HashFunction_BLAKE2B256_PERSONAL HashFunction = "blake2b256-personal"
 )

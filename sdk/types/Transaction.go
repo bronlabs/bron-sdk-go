@@ -1,11 +1,11 @@
 package types
 
 type Transaction struct {
+	Embedded *TransactionEmbedded `json:"_embedded,omitempty"`
 	AccountID string `json:"accountId"`
 	AccountType AccountType `json:"accountType"`
 	CreatedAt string `json:"createdAt"`
 	CreatedBy *string `json:"createdBy,omitempty"`
-	Embedded *TransactionEmbedded `json:"embedded,omitempty"`
 	ExpiresAt *string `json:"expiresAt,omitempty"`
 	ExternalID string `json:"externalId"`
 	Extra *TransactionExtra `json:"extra,omitempty"`

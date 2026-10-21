@@ -1,6 +1,7 @@
 package types
 
 type DryRunTransaction struct {
+	Embedded *TransactionEmbedded `json:"_embedded,omitempty"`
 	AccountID string `json:"accountId"`
 	Description *string `json:"description,omitempty"`
 	Estimations *[]TransactionEstimation `json:"estimations,omitempty"`

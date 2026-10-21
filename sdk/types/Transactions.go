@@ -1,6 +1,6 @@
 package types
 
 type Transactions struct {
-	Embedded *TransactionEmbedded `json:"embedded,omitempty"`
+	Embedded *TransactionEmbedded `json:"_embedded,omitempty"`
 	Transactions []Transaction `json:"transactions"`
 }

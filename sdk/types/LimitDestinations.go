@@ -6,4 +6,5 @@ type LimitDestinations struct {
 	ToAccounts *bool `json:"toAccounts,omitempty"`
 	ToAddressBook *bool `json:"toAddressBook,omitempty"`
 	ToExternalAddresses *bool `json:"toExternalAddresses,omitempty"`
+	ToFirstTimeRecipients *bool `json:"toFirstTimeRecipients,omitempty"`
 }

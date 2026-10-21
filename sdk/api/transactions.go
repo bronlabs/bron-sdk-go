@@ -77,6 +77,18 @@ func (api *TransactionsAPI) DryRunTransaction(ctx context.Context, body types.Cr
 	return &result, err
 }
 
+func (api *TransactionsAPI) GetSwapRoute(ctx context.Context, body types.SwapRoute) (*types.DryRunTransaction, error) {
+	path := fmt.Sprintf("/workspaces/%s/transactions/swap-route", api.workspaceID)
+	var result types.DryRunTransaction
+	options := http.RequestOptions{
+		Method: "POST",
+		Path:   path,
+		Body:   body,
+	}
+	err := api.http.RequestWithContext(ctx, &result, options)
+	return &result, err
+}
+
 func (api *TransactionsAPI) GetTransactionByID(ctx context.Context, transactionId string) (*types.Transaction, error) {
 	path := fmt.Sprintf("/workspaces/%s/transactions/%s", api.workspaceID, transactionId)
 	var result types.Transaction
