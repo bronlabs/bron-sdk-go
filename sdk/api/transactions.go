@@ -160,6 +160,18 @@ func (api *TransactionsAPI) DeclineTransaction(ctx context.Context, transactionI
 	return &result, err
 }
 
+func (api *TransactionsAPI) DryRunRecreateSigningRequest(ctx context.Context, transactionId string, body types.RecreateSigningRequest) (*types.Transaction, error) {
+	path := fmt.Sprintf("/workspaces/%s/transactions/%s/dry-run-recreate-signing-request", api.workspaceID, transactionId)
+	var result types.Transaction
+	options := http.RequestOptions{
+		Method: "POST",
+		Path:   path,
+		Body:   body,
+	}
+	err := api.http.RequestWithContext(ctx, &result, options)
+	return &result, err
+}
+
 func (api *TransactionsAPI) GetTransactionEvents(ctx context.Context, transactionId string) (*types.TransactionEvents, error) {
 	path := fmt.Sprintf("/workspaces/%s/transactions/%s/events", api.workspaceID, transactionId)
 	var result types.TransactionEvents
@@ -276,6 +288,18 @@ func (s *TransactionsStream) Err() error { return s.final() }
 func (s *TransactionsStream) Close() error {
 	s.closeOnce.Do(func() { close(s.done) })
 	return s.inner.Close()
+}
+
+func (api *TransactionsAPI) RecreateSigningRequest(ctx context.Context, transactionId string, body types.RecreateSigningRequest) (*types.Transaction, error) {
+	path := fmt.Sprintf("/workspaces/%s/transactions/%s/recreate-signing-request", api.workspaceID, transactionId)
+	var result types.Transaction
+	options := http.RequestOptions{
+		Method: "POST",
+		Path:   path,
+		Body:   body,
+	}
+	err := api.http.RequestWithContext(ctx, &result, options)
+	return &result, err
 }
 
 func (api *TransactionsAPI) RejectOutgoingOffer(ctx context.Context, transactionId string, body types.OfferActions) (*types.Transaction, error) {

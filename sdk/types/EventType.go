@@ -28,6 +28,7 @@ const (
 	EventType_LOAN_UNLOCK_COLLATERAL EventType = "loan-unlock-collateral"
 	EventType_LOAN_BORROW EventType = "loan-borrow"
 	EventType_LOAN_REPAY EventType = "loan-repay"
+	EventType_LOAN_LIQUIDATION EventType = "loan-liquidation"
 	EventType_CANTON_REWARD EventType = "canton-reward"
 	EventType_MESSAGE_SIGNED EventType = "message-signed"
 	EventType_DEPOSIT_OFFER EventType = "deposit-offer"

@@ -13,4 +13,5 @@ const (
 	AddressStatus_DISABLED AddressStatus = "disabled"
 	AddressStatus_ERROR AddressStatus = "error"
 	AddressStatus_ACCOUNT_ARCHIVED AddressStatus = "account-archived"
+	AddressStatus_PAUSED AddressStatus = "paused"
 )

@@ -12,6 +12,7 @@ type CreateAddressBookRecord struct {
 	Memo *string `json:"memo,omitempty"`
 	Name string `json:"name"`
 	NetworkID *string `json:"networkId,omitempty"`
+	Note *string `json:"note,omitempty"`
 	RecordType *RecordType `json:"recordType,omitempty"`
 	Tag *string `json:"tag,omitempty"`
 }

@@ -15,6 +15,7 @@ type AddressBookRecord struct {
 	Memo *string `json:"memo,omitempty"`
 	Name string `json:"name"`
 	NetworkID *string `json:"networkId,omitempty"`
+	Note *string `json:"note,omitempty"`
 	RecordID string `json:"recordId"`
 	RecordType RecordType `json:"recordType"`
 	Status RecordStatus `json:"status"`

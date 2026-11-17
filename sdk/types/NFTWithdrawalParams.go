@@ -6,6 +6,7 @@ type NFTWithdrawalParams struct {
 	FeeLevel *FeeLevel `json:"feeLevel,omitempty"`
 	IncludeFee *bool `json:"includeFee,omitempty"`
 	NetworkFees *RequestedNetworkFees `json:"networkFees,omitempty"`
+	RecipientEmail *string `json:"recipientEmail,omitempty"`
 	ToAccountID *string `json:"toAccountId,omitempty"`
 	ToAddress *string `json:"toAddress,omitempty"`
 	ToAddressBookRecordID *string `json:"toAddressBookRecordId,omitempty"`
