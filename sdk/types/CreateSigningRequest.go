@@ -1,5 +1,3 @@
 package types
 
-type CreateSigningRequest struct {
-	PrimitivesVersion *string `json:"primitivesVersion,omitempty"`
-}
+type CreateSigningRequest map[string]interface{}
